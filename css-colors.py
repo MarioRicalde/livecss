@@ -2,6 +2,7 @@
 from os import mkdir
 from os.path import join, exists, basename
 from shutil import rmtree as rm
+# import time
 
 # sublime
 import sublime
@@ -16,7 +17,6 @@ from templates import *
 # generate theme and syn files by lxml
 
 # Constants
-
 PACKAGES_PATH = sublime.packages_path()
 USER_DIR_PATH = join(PACKAGES_PATH, 'User/')
 COLORIZED_PATH = join(USER_DIR_PATH, 'Colorized/')
@@ -24,18 +24,24 @@ COLORIZED_PATH = join(USER_DIR_PATH, 'Colorized/')
 
 class CssColorsCommand(sublime_plugin.TextCommand):
     def run(self, edit):
+        # t_start = time.time()
         self.apply_original_syntax()
         colors = self.colors_in_current_file()
-        if theme_is_colorized() and not colors_changed(colors):
+        state = State(colors)
+        if theme_is_colorized() and not state.dirty:
             self.apply_colorized_syntax()
+            # t_end = time.time()
+            # print t_end - t_start
             return
         self.prepare_env()
-        save_colors_hash(colors)
-        generate_syntax(self.view, colors)
+        state.save()
         highlight(colors)
+        self.apply_colorized_syntax()
+        # t_end = time.time()
+        # print t_end - t_start
 
     def colors_in_current_file(self):
-        color_regions = self.find_colors()
+        color_regions = self._find_colors()
         colors = set(Color(self.view.substr(color)) for color in color_regions)
         return colors
 
@@ -52,7 +58,7 @@ class CssColorsCommand(sublime_plugin.TextCommand):
     def apply_original_syntax(self):
         self.view.set_syntax_file("Packages/CSS/CSS.tmLanguage")
 
-    def find_colors(self):
+    def _find_colors(self):
         w3c = self.view.find_by_selector("support.constant.color.w3c-standard-color-name.css")
         extra_web = self.view.find_by_selector("invalid.deprecated.color.w3c-non-standard-color-name.css")
         hex_rgb = self.view.find_by_selector("constant.other.color.rgb-value.css")
@@ -69,7 +75,7 @@ class Color(object):
         if color in named_colors:
             hex_color = named_colors[color]
         elif not color.startswith('#'):
-            hex_color = rgb_to_hex(tuple(color.split(',')))
+            hex_color = self._rgb_to_hex(tuple(color.split(',')))
         else:
             hex_color = color
         return hex_color
@@ -78,11 +84,11 @@ class Color(object):
     def syntax_template(self):
         color = self.color
         if color in named_colors:
-            t = "(%s)\\b" % color
+            t = '(%s)\\b' % color
         elif not color.startswith('#'):
             t = "(rgb)(\(%s\))(?x)" % color
         else:
-            t = "(#)(%s)\\b" % color.undash
+            t = '(#)(%s)\\b' % self.undash
         return t
 
     @property
@@ -104,24 +110,27 @@ class Color(object):
     def __hash__(self):
         return hash(self.color)
 
-
-def rgb_to_hex(rgb):
-    # rgb: tuple of r,g,b values
-    return '#%02x%02x%02x' % tuple(int(x) for x in rgb)
-
-
-def save_colors_hash(colors):
-    settings = "Colorized.sublime-settings"
-    s = sublime.load_settings(settings)
-    s.set('hash', str(hash(str(colors))))
-    sublime.save_settings(settings)
+    def _rgb_to_hex(self, rgb):
+        # rgb: tuple of r,g,b values
+        return '#%02x%02x%02x' % tuple(int(x) for x in rgb)
 
 
-def colors_changed(colors):
-    s = sublime.load_settings("Colorized.sublime-settings")
-    h = s.get('hash')
-    if h != str(hash(str(colors))):
-        return True
+class State:
+    def __init__(self, colors):
+        self.colors = colors
+
+    def save(self):
+        settings = 'Colorized.sublime-settings'
+        s = sublime.load_settings(settings)
+        s.set('hash', str(hash(str(self.colors))))
+        sublime.save_settings(settings)
+
+    @property
+    def dirty(self):
+        s = sublime.load_settings('Colorized.sublime-settings')
+        h = s.get('hash')
+        if h != str(hash(str(self.colors))):
+            return True
 
 
 def theme_is_colorized():
@@ -129,32 +138,8 @@ def theme_is_colorized():
         return True
 
 
-def add_scopes(colors):
-    """
-    Add given scopes to syntax file, sufixed by 'css-colorize.css'
-    """
-
-    scopes_xml = [syntax_color_template.format(color.syntax_template, color.undash)
-                                                                for color in colors]
-    return template.format('\n'.join(scopes_xml)).split()
-
-
-def generate_syntax(view, color_codes):
-    with open(join(PACKAGES_PATH, 'CSS/CSS.tmLanguage')) as syn_file:
-        syn_file_content = syn_file.readlines()
-        new_rules = add_scopes(color_codes)
-        colorized = syn_file_content[0:553] + include.split() + syn_file_content[553:]
-        colorized = colorized[0:537] + new_rules + colorized[537:]
-
-    # write new color rules to newly crated syntax file
-    with open(COLORIZED_PATH + "Colorized-CSS.tmLanguage", 'w') as syntax_f:
-        syntax_f.write(''.join(colorized))
-
-    view.set_syntax_file(COLORIZED_PATH + "Colorized-CSS.tmLanguage")
-
-
 def get_current_theme():
-    s = sublime.load_settings("Base File.sublime-settings")
+    s = sublime.load_settings('Base File.sublime-settings')
     theme_path = s.get('color_scheme').split('/')
     if theme_path[0]:
         theme = join(PACKAGES_PATH, *theme_path[1:])
@@ -168,18 +153,40 @@ def set_current_theme(name):
     return s.set('color_scheme', name)
 
 
-def add_colors(colors):
+def add_scopes(colors):
     """
     Add given scopes to syntax file, sufixed by 'css-colorize.css'
     """
-    colors_xml = [theme_templ.format(color.undash, color.hex, color.opposite) for color in colors]
+
+    scopes_xml = [syntax_color_template.format(color.syntax_template,
+                  color.undash) for color in colors]
+    return template.format('\n'.join(scopes_xml)).split()
+
+
+def generate_syntax(colors):
+    with open(PACKAGES_PATH + '/CSS/CSS.tmLanguage') as syn_file:
+        syn_file_content = syn_file.readlines()
+        new_rules = add_scopes(colors)
+        colorized = syn_file_content[0:553] + include.split() + syn_file_content[553:]
+        colorized = colorized[0:537] + new_rules + colorized[537:]
+
+    with open(COLORIZED_PATH + "Colorized-CSS.tmLanguage", 'w') as syntax_f:
+        syntax_f.write(''.join(colorized))
+
+
+def add_colors(colors):
+    """Add given scopes to syntax file, sufixed by 'css-colorize.css'"""
+
+    colors_xml = [theme_templ.format(color.undash, color.hex, color.opposite)
+                  for color in colors]
     return colors_xml
 
 
-def highlight(colors):
+def generate_color_theme(colors):
     """highlight [scopes] with [colors]
     `colors` - list of color names (if hex -> without #)
     """
+
     theme_path = get_current_theme()
     theme = basename(theme_path)
     with open(theme_path) as fp:
@@ -191,3 +198,8 @@ def highlight(colors):
         f.write(''.join(colorized_theme))
 
     set_current_theme(join(COLORIZED_PATH, 'Colorized-' + theme))
+
+
+def highlight(colors):
+    generate_syntax(colors)
+    generate_color_theme(colors)
