@@ -2,7 +2,7 @@
 from os import mkdir
 from os.path import join, exists, basename
 from shutil import rmtree as rm
-# import time
+import time
 
 # sublime
 import sublime
@@ -24,11 +24,11 @@ COLORIZED_PATH = join(USER_DIR_PATH, 'Colorized/')
 
 class CssColorsCommand(sublime_plugin.TextCommand):
     def run(self, edit):
-        # t_start = time.time()
+        t_start = time.time()
         self.apply_original_syntax()
         colors = self.colors_in_current_file()
         state = State(colors)
-        if theme_is_colorized() and not state.dirty:
+        if Theme.is_colorized and not state.dirty:
             self.apply_colorized_syntax()
             # t_end = time.time()
             # print t_end - t_start
@@ -37,8 +37,8 @@ class CssColorsCommand(sublime_plugin.TextCommand):
         state.save()
         highlight(colors)
         self.apply_colorized_syntax()
-        # t_end = time.time()
-        # print t_end - t_start
+        t_end = time.time()
+        print t_end - t_start
 
     def colors_in_current_file(self):
         color_regions = self._find_colors()
@@ -133,24 +133,27 @@ class State:
             return True
 
 
-def theme_is_colorized():
-    if basename(get_current_theme()).startswith('Colorized-'):
-        return True
+class Theme(object):
+    class __metaclass__(type):
+        @property
+        def name(cls):
+            s = sublime.load_settings('Base File.sublime-settings')
+            theme_path = s.get('color_scheme').split('/')
+            if theme_path[0]:
+                theme = join(PACKAGES_PATH, *theme_path[1:])
+            else:
+                theme = join(COLORIZED_PATH, theme_path[-1])
+            return theme
 
+        @name.setter
+        def name(cls, name):
+            s = sublime.load_settings("Base File.sublime-settings")
+            s.set('color_scheme', name)
 
-def get_current_theme():
-    s = sublime.load_settings('Base File.sublime-settings')
-    theme_path = s.get('color_scheme').split('/')
-    if theme_path[0]:
-        theme = join(PACKAGES_PATH, *theme_path[1:])
-    else:
-        theme = join(COLORIZED_PATH, theme_path[-1])
-    return theme
-
-
-def set_current_theme(name):
-    s = sublime.load_settings("Base File.sublime-settings")
-    return s.set('color_scheme', name)
+        @property
+        def is_colorized(cls):
+            if basename(cls.name).startswith('Colorized-'):
+                return True
 
 
 def add_scopes(colors):
@@ -197,7 +200,8 @@ def generate_color_theme(colors):
     with open(join(COLORIZED_PATH, 'Colorized-' + theme), 'w') as f:
         f.write(''.join(colorized_theme))
 
-    set_current_theme(join(COLORIZED_PATH, 'Colorized-' + theme))
+    Theme.name = join(COLORIZED_PATH, 'Colorized-' + theme)
+    # set_current_theme(join(COLORIZED_PATH, 'Colorized-' + theme))
 
 
 def highlight(colors):
