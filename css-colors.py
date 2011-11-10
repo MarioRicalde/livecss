@@ -5,27 +5,26 @@ import sublime_plugin
 from shutil import rmtree as rm
 
 
-#alg:
-# select all colors:
-# rgb and named colors to hex form
-# read CSS.tmLanguage file to memory
-#   mix with generated scope names for each color
-#   write it by different name
-#   before exit rm new file#
-# use add_regions to colorize regions
-# reapply sytntax and theme files
+#TODO:
+# if colors didn't change, reapply old settings
 
 # Constants
 
 PACKAGES_PATH = sublime.packages_path()
-USER_DIR_PATH = join(PACKAGES_PATH, 'User')
-COLORIZED_PATH = join(USER_DIR_PATH, 'Colorized')
+USER_DIR_PATH = join(PACKAGES_PATH, 'User/')
+COLORIZED_PATH = join(USER_DIR_PATH, 'Colorized/')
 
 
 class CssColorsCommand(sublime_plugin.TextCommand):
     def run(self, edit):
-        self.init()
+        self.apply_original_syntax()
         colors = self.colors_in_current_file()
+        if theme_is_colorized() and not colors_changed(colors):
+            self.apply_colorized_syntax()
+            print "Not changed"
+            return
+        self.init()
+        save_colors_hash(colors)
         generate_syntax(self.view, colors)
         highlight(colors)
 
@@ -43,11 +42,12 @@ class CssColorsCommand(sublime_plugin.TextCommand):
             rm(COLORIZED_PATH)
             mkdir(COLORIZED_PATH)
 
+    def apply_colorized_syntax(self):
+        self.view.set_syntax_file(COLORIZED_PATH + "Colorized-CSS.tmLanguage")
+
+    def apply_original_syntax(self):
         self.view.set_syntax_file("Packages/CSS/CSS.tmLanguage")
 
-
-# class CssColorsRollback(sublime_plugin.EventListener):
-    # def on_
 
 WEB_COLORS = {
     "White": "#FFFFFF",
@@ -101,6 +101,25 @@ include = """
 """
 
 
+def save_colors_hash(colors):
+    settings = "Colorized.sublime-settings"
+    s = sublime.load_settings(settings)
+    s.set('hash', str(hash(str(colors))))
+    sublime.save_settings(settings)
+
+
+def colors_changed(colors):
+    s = sublime.load_settings("Colorized.sublime-settings")
+    h = s.get('hash')
+    if h != str(hash(str(colors))):
+        return True
+
+
+def theme_is_colorized():
+    if basename(get_current_theme()).startswith('Colorized-'):
+        return True
+
+
 def normalize_colors(colors):
     # convert [colors] to hex
     # [colors]: hex or rgb
@@ -142,10 +161,10 @@ def generate_syntax(view, color_codes):
         colorized = colorized[0:537] + new_rules + colorized[537:]
 
     # write new color rules to newly crated syntax file
-    with open(join(COLORIZED_PATH, "CSS-colorized.tmLanguage"), 'w') as syntax_f:
+    with open(COLORIZED_PATH + "Colorized-CSS.tmLanguage", 'w') as syntax_f:
         syntax_f.write(''.join(colorized))
 
-    view.set_syntax_file(join(COLORIZED_PATH, "CSS-colorized.tmLanguage"))
+    view.set_syntax_file(COLORIZED_PATH + "Colorized-CSS.tmLanguage")
 
 
 def get_current_theme():
