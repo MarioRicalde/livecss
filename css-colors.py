@@ -1,6 +1,6 @@
 # stdlib
 from os import mkdir
-from os.path import join, exists, basename
+from os.path import join, exists, basename, dirname
 from shutil import rmtree as rm
 import time
 
@@ -15,6 +15,8 @@ from templates import *
 
 #TODO:
 # generate theme and syn files by lxml
+# improove generating opposite color (? use only white or black for fg)
+# add % rgb support
 
 # Constants
 PACKAGES_PATH = sublime.packages_path()
@@ -28,10 +30,11 @@ class CssColorsCommand(sublime_plugin.TextCommand):
         self.apply_original_syntax()
         colors = self.colors_in_current_file()
         state = State(colors)
-        if Theme.is_colorized and not state.dirty:
+        print "theme.is_colorized", theme.is_colorized
+        if theme.is_colorized and not state.dirty:
             self.apply_colorized_syntax()
-            # t_end = time.time()
-            # print t_end - t_start
+            t_end = time.time()
+            print t_end - t_start
             return
         self.prepare_env()
         state.save()
@@ -133,10 +136,14 @@ class State:
             return True
 
 
-class Theme(object):
+class theme(object):
+    """Global object
+    represents sublimetext color scheme
+    """
+
     class __metaclass__(type):
         @property
-        def name(cls):
+        def current_theme(cls):
             s = sublime.load_settings('Base File.sublime-settings')
             theme_path = s.get('color_scheme').split('/')
             if theme_path[0]:
@@ -145,15 +152,34 @@ class Theme(object):
                 theme = join(COLORIZED_PATH, theme_path[-1])
             return theme
 
-        @name.setter
-        def name(cls, name):
+        @current_theme.setter
+        def current_theme(cls, name):
             s = sublime.load_settings("Base File.sublime-settings")
             s.set('color_scheme', name)
 
         @property
         def is_colorized(cls):
-            if basename(cls.name).startswith('Colorized-'):
+            if cls.name.startswith('Colorized-'):
                 return True
+
+        @property
+        def path(cls):
+            return dirname(cls.current_theme)
+
+        @property
+        def un_colorized_name(cls):
+            if cls.is_colorized:
+                return cls.current_theme
+            return cls.path + cls.name[10:]
+
+        @property
+        def colorized_name(cls):
+            if not cls.is_colorized:
+                return cls.path + '/Colorized-' + cls.name
+
+        @property
+        def name(cls):
+            return basename(cls.current_theme)
 
 
 def add_scopes(colors):
@@ -190,18 +216,16 @@ def generate_color_theme(colors):
     `colors` - list of color names (if hex -> without #)
     """
 
-    theme_path = get_current_theme()
-    theme = basename(theme_path)
+    theme_path = theme.current_theme
     with open(theme_path) as fp:
         theme_content = fp.readlines()
         new_colores = add_colors(colors)
         colorized_theme = theme_content[0:8] + new_colores + theme_content[8:]
 
-    with open(join(COLORIZED_PATH, 'Colorized-' + theme), 'w') as f:
+    with open(theme.colorized_name, 'w') as f:
         f.write(''.join(colorized_theme))
 
-    Theme.name = join(COLORIZED_PATH, 'Colorized-' + theme)
-    # set_current_theme(join(COLORIZED_PATH, 'Colorized-' + theme))
+    theme.current_theme = theme.colorized_name
 
 
 def highlight(colors):
