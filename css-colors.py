@@ -37,7 +37,6 @@ class CssColorsCommand(sublime_plugin.TextCommand):
     def colors_in_current_file(self):
         color_regions = self.find_colors()
         colors = set(Color(self.view.substr(color)) for color in color_regions)
-        # normalized_to_hex_colors = set(to_hex(hex_rgb_colors))
         return colors
 
     def prepare_env(self):
@@ -66,11 +65,25 @@ class Color(object):
 
     @property
     def hex(self):
-        return to_hex(self.color)
+        color = self.color
+        if color in named_colors:
+            hex_color = named_colors[color]
+        elif not color.startswith('#'):
+            hex_color = rgb_to_hex(tuple(color.split(',')))
+        else:
+            hex_color = color
+        return hex_color
 
     @property
     def syntax_template(self):
-        return template_for(self.color)
+        color = self.color
+        if color in named_colors:
+            t = "(%s)\\b" % color
+        elif not color.startswith('#'):
+            t = "(rgb)(\(%s\))(?x)" % color
+        else:
+            t = "(#)(%s)\\b" % color.undash
+        return t
 
     @property
     def undash(self):
@@ -78,7 +91,9 @@ class Color(object):
 
     @property
     def opposite(self):
-        return opposite(self.hex)
+        opp_int = 16777215 - int(self.undash, 16)
+        opp_hex = hex(opp_int)
+        return "#" + opp_hex[0] + opp_hex[2:]
 
     def __repr__(self):
         return self.color
@@ -88,6 +103,11 @@ class Color(object):
 
     def __hash__(self):
         return hash(self.color)
+
+
+def rgb_to_hex(rgb):
+    # rgb: tuple of r,g,b values
+    return '#%02x%02x%02x' % tuple(int(x) for x in rgb)
 
 
 def save_colors_hash(colors):
@@ -109,39 +129,6 @@ def theme_is_colorized():
         return True
 
 
-def to_hex(color):
-    if color in named_colors:
-        hex_color = named_colors[color]
-
-    elif not color.startswith('#'):
-
-        hex_color = rgb_to_hex(tuple(color.split(',')))
-    else:
-        hex_color = color
-    return hex_color
-
-
-def template_for(color):
-    if color in named_colors:
-        t = "(%s)\\b" % color
-    elif not color.startswith('#'):
-        t = "(rgb)(\(%s\))(?x)" % color
-    else:
-        t = "(#)(%s)\\b" % color[1:]
-    return t
-
-
-def rgb_to_hex(rgb):
-    # rgb: tuple of r,g,b values
-    return '#%02x%02x%02x' % tuple(int(x) for x in rgb)
-
-
-def opposite(hex_color):
-    opp_int = 16777215 - int(hex_color[1:], 16)
-    opp_hex = hex(opp_int)
-    return "#" + opp_hex[0] + opp_hex[2:]
-
-
 def add_scopes(colors):
     """
     Add given scopes to syntax file, sufixed by 'css-colorize.css'
@@ -153,7 +140,6 @@ def add_scopes(colors):
 
 
 def generate_syntax(view, color_codes):
-
     with open(join(PACKAGES_PATH, 'CSS/CSS.tmLanguage')) as syn_file:
         syn_file_content = syn_file.readlines()
         new_rules = add_scopes(color_codes)
