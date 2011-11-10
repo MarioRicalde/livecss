@@ -2,6 +2,9 @@
 This Script underlays the hexadecimal, rgb or named CSS color codes with their real color.
 The foreground color is selected appositely.
 
+#Screenshot
+![shot](http://i.imgur.com/HgGWH.png)
+
 #Limitations:
 1. It can only work by calling a command.
 2. Due to limitation of current sublimetext api
