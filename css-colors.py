@@ -1,7 +1,5 @@
 # stdlib
-from os import mkdir
-from os.path import join, exists, basename, dirname
-from shutil import rmtree as rm
+from os.path import join, basename, dirname
 
 # sublime
 import sublime
@@ -18,8 +16,7 @@ from templates import *
 
 # Constants
 PACKAGES_PATH = sublime.packages_path()
-USER_DIR_PATH = join(PACKAGES_PATH, 'User/')
-COLORIZED_PATH = join(USER_DIR_PATH, 'Colorized/')
+SUBLIME_PATH = dirname(PACKAGES_PATH)
 
 
 class CssColorsCommand(sublime_plugin.TextCommand):
@@ -27,9 +24,9 @@ class CssColorsCommand(sublime_plugin.TextCommand):
         color_regions = self.get_color_regions()
         colors = self.get_colors(color_regions)
         state = State(colors)
-        if (theme.is_colorized and not state.is_dirty) or not colors:
+        if not colors or theme.is_colorized and not state.is_dirty:
             return
-        self.prepare_env()
+        state.save()
         generate_color_theme(colors)
         colorize_regions(self.view, color_regions, colors)
 
@@ -42,13 +39,6 @@ class CssColorsCommand(sublime_plugin.TextCommand):
         extra_web = self.view.find_by_selector("invalid.deprecated.color.w3c-non-standard-color-name.css")
         hex_rgb = self.view.find_by_selector("constant.other.color.rgb-value.css")
         return w3c + extra_web + hex_rgb
-
-    def prepare_env(self):
-        if not exists(COLORIZED_PATH):
-            mkdir(COLORIZED_PATH)
-        else:
-            rm(COLORIZED_PATH)
-            mkdir(COLORIZED_PATH)
 
 
 class Color(object):
@@ -102,11 +92,10 @@ class Color(object):
         return tuple(int(hex[i:i + hex_len / 3], 16) for i in range(0, hex_len, hex_len / 3))
 
 
-class State:
+class State(object):
     def __init__(self, colors):
         self._settings = sublime.load_settings('Colorized.sublime-settings')
         self.colors = colors
-        self.save()
 
     def save(self):
         self.hash = str(hash(str(self.colors)))
@@ -123,7 +112,7 @@ class State:
     @hash.setter
     def hash(self, value):
         self._settings.set('hash', value)
-        sublime.save_settings(settings)
+        sublime.save_settings('Colorized.sublime-settings')
 
 
 class theme(object):
@@ -135,12 +124,10 @@ class theme(object):
     class __metaclass__(type):
         @property
         def current_theme(cls):
-            theme_path = cls._settings.get('color_scheme').split('/')
-            if theme_path[0]:
-                theme = join(PACKAGES_PATH, *theme_path[1:])
-            else:
-                theme = join(COLORIZED_PATH, theme_path[-1])
-            return theme
+            theme_path = cls._settings.get('color_scheme')
+            if theme_path.startswith('Packages'):
+                theme_path = join(SUBLIME_PATH, theme_path)
+            return theme_path
 
         @current_theme.setter
         def current_theme(cls, name):
@@ -156,13 +143,14 @@ class theme(object):
             return dirname(cls.current_theme)
 
         @property
+        def name(cls):
+            return basename(cls.current_theme)
+
+        @property
         def colorized_name(cls):
             if not cls.is_colorized:
                 return cls.path + '/Colorized-' + cls.name
-
-        @property
-        def name(cls):
-            return basename(cls.current_theme)
+            return cls.current_theme
 
 
 def add_colors(colors):
