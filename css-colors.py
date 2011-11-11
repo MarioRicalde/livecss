@@ -12,8 +12,8 @@ from templates import *
 
 #TODO:
 # generate theme and syn files by lxml
-# and uncolorize command
 # add % rgb support
+# don't colorize if colors's been deleted
 
 # Constants
 PACKAGES_PATH = sublime.packages_path()
@@ -51,9 +51,12 @@ class Color(object):
 
     @property
     def opposite(self):
-        rgb = self._hex_to_rgb(self.undash)
-        diff = (255 - rgb[0], 255 - rgb[1], 255 - rgb[2])
-        return self._rgb_to_hex(diff)
+        r, g, b = self._hex_to_rgb(self.undash)
+        brightness = (r + r + b + g + g + g) / 6
+        if brightness > 130:
+            return '#000000'
+        else:
+            return '#ffffff'
 
     def __repr__(self):
         return self.color
@@ -78,9 +81,10 @@ class State(object):
     Uses hash of all colors in file to save state
     """
 
-    def __init__(self, colors):
+    def __init__(self, colors, file_name):
         self._settings = sublime.load_settings('Colorized.sublime-settings')
         self.colors = colors
+        self.file_name = file_name
 
     def save(self):
         self._hash = str(hash(str(self.colors)))
@@ -93,11 +97,12 @@ class State(object):
 
     @property
     def _hash(self):
-        return self._settings.get('hash')
+        s = self._settings.get(self.file_name)
+        return s['hash']
 
     @_hash.setter
     def _hash(self, value):
-        self._settings.set('hash', value)
+        self._settings.set(self.file_name, {'hash': value})
         sublime.save_settings('Colorized.sublime-settings')
 
 
@@ -137,6 +142,11 @@ class theme(object):
             if not cls.is_colorized:
                 return join(cls.path, 'Colorized-' + cls.name)
             return cls.current_theme
+
+        @property
+        def uncolorized_name(cls):
+            if cls.is_colorized:
+                return join(cls.path, cls.name.lstrip('Colorized-'))
 
 
 def add_colors(colors):
@@ -191,7 +201,7 @@ class CssColorizeCommand(sublime_plugin.TextCommand):
     def run(self, edit):
         color_regions = self.get_color_regions()
         colors = self.get_colors(color_regions)
-        state = State(colors)
+        state = State(colors, self.view.file_name())
         if not colors or theme.is_colorized and not state.is_dirty:
             return []
         state.save()
@@ -209,9 +219,18 @@ class CssColorizeCommand(sublime_plugin.TextCommand):
         return w3c + extra_web + hex_rgb
 
 
-class CssUnColorizeCommand(sublime_plugin.TextCommand):
+class CssUncolorizeCommand(sublime_plugin.TextCommand):
     def run(self, edit):
-        self.view.remove_regions("")
+        colorized_regions = self.get_color_regions()
+        for region in colorized_regions:
+            self.view.erase_regions(str(region))
+        theme.current_theme = theme.uncolorized_name
+
+    def get_color_regions(self):
+        w3c = self.view.find_by_selector("support.constant.color.w3c-standard-color-name.css")
+        extra_web = self.view.find_by_selector("invalid.deprecated.color.w3c-non-standard-color-name.css")
+        hex_rgb = self.view.find_by_selector("constant.other.color.rgb-value.css")
+        return w3c + extra_web + hex_rgb
 
 
 class CssColorizeEventer(sublime_plugin.EventListener):
@@ -226,7 +245,9 @@ class CssColorizeEventer(sublime_plugin.EventListener):
     def colorize(self):
         if not self.file_is_css:
             return []
-        view.window().run_command("css_colorize")
+        if not self.view.window():
+            return []
+        self.view.window().run_command("css_colorize")
 
     @property
     def file_is_css(self):
