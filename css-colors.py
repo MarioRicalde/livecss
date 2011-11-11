@@ -12,6 +12,7 @@ from templates import *
 
 #TODO:
 # generate theme and syn files by lxml
+# and uncolorize command
 # add % rgb support
 
 # Constants
@@ -19,29 +20,9 @@ PACKAGES_PATH = sublime.packages_path()
 SUBLIME_PATH = dirname(PACKAGES_PATH)
 
 
-class CssColorsCommand(sublime_plugin.TextCommand):
-    def run(self, edit):
-        color_regions = self.get_color_regions()
-        colors = self.get_colors(color_regions)
-        state = State(colors)
-        if not colors or theme.is_colorized and not state.is_dirty:
-            return
-        state.save()
-        generate_color_theme(colors)
-        colorize_regions(self.view, color_regions, colors)
-
-    def get_colors(self, color_regions):
-        colors = [Color(self.view.substr(color)) for color in color_regions]
-        return colors
-
-    def get_color_regions(self):
-        w3c = self.view.find_by_selector("support.constant.color.w3c-standard-color-name.css")
-        extra_web = self.view.find_by_selector("invalid.deprecated.color.w3c-non-standard-color-name.css")
-        hex_rgb = self.view.find_by_selector("constant.other.color.rgb-value.css")
-        return w3c + extra_web + hex_rgb
-
-
 class Color(object):
+    """Convenience to work with colors"""
+
     def __init__(self, color):
         self.color = color
 
@@ -93,32 +74,36 @@ class Color(object):
 
 
 class State(object):
+    """File state based on colors.
+    Uses hash of all colors in file to save state
+    """
+
     def __init__(self, colors):
         self._settings = sublime.load_settings('Colorized.sublime-settings')
         self.colors = colors
 
     def save(self):
-        self.hash = str(hash(str(self.colors)))
+        self._hash = str(hash(str(self.colors)))
 
     @property
     def is_dirty(self):
-        if self.hash != str(hash(str(self.colors))):
+        """Indicates if new colors appeared"""
+        if self._hash != str(hash(str(self.colors))):
             return True
 
     @property
-    def hash(self):
+    def _hash(self):
         return self._settings.get('hash')
 
-    @hash.setter
-    def hash(self, value):
+    @_hash.setter
+    def _hash(self, value):
         self._settings.set('hash', value)
         sublime.save_settings('Colorized.sublime-settings')
 
 
 class theme(object):
-    """Global object
-    represents sublimetext color scheme
-    """
+    """Global object represents ST color scheme """
+
     _settings = sublime.load_settings('Base File.sublime-settings')
 
     class __metaclass__(type):
@@ -148,33 +133,92 @@ class theme(object):
 
         @property
         def colorized_name(cls):
+            """Theme name with 'Colorized-' prefix"""
             if not cls.is_colorized:
-                return cls.path + '/Colorized-' + cls.name
+                return join(cls.path, 'Colorized-', cls.name)
             return cls.current_theme
 
 
 def add_colors(colors):
-    colors = set(colors)
+    """Returns xml ready to be inserted in color theme
+
+    Arguments:
+    colors: [Color]
+    """
+
     colors_xml = [theme_template.format(color.undash, color.hex, color.opposite)
                   for color in colors]
     return colors_xml
 
 
 def generate_color_theme(colors):
+    """Generate new color theme with rules for `colors` inside.
+    Then set up it as current theme.
+
+    Arguments:
+    colors: [Color]
+    """
+
     theme_path = theme.current_theme
 
-    with open(theme_path) as fp:
-        theme_content = fp.readlines()
-        new_colores = add_colors(colors)
-        colorized_theme = theme_content[0:8] + new_colores + theme_content[8:]
+    with open(theme_path, 'r') as current_theme_file:
+        # for now we just insert new colors after 8-th line
+        # FIXME: generate xml instead
+        current_theme_content = current_theme_file.readlines()
+        new_colores = add_colors(set(colors))
+        colorized_theme_content = current_theme_content[0:8] + new_colores + current_theme_content[8:]
 
-    with open(theme.colorized_name, 'w') as f:
-        f.write(''.join(colorized_theme))
+    with open(theme.colorized_name, 'w') as colorized_theme_file:
+        colorized_theme_file.write(''.join(colorized_theme_content))
 
     theme.current_theme = theme.colorized_name
 
 
 def colorize_regions(view, regions, colors):
+    """Colorize given `regions` through ST API.
+
+    Arguments:
+    regions: [sublime.Region], regions to colorize
+    colors: [Color], colors to colorize `regions`
+    """
+
     regions_colors = zip(regions, colors)
     for r, c  in regions_colors:
         view.add_regions(str(r), [r], c.undash)
+
+
+class CssColorizeCommand(sublime_plugin.TextCommand):
+    def run(self, edit):
+        color_regions = self.get_color_regions()
+        colors = self.get_colors(color_regions)
+        state = State(colors)
+        if not colors or theme.is_colorized and not state.is_dirty:
+            return []
+        state.save()
+        generate_color_theme(colors)
+        colorize_regions(self.view, color_regions, colors)
+
+    def get_colors(self, color_regions):
+        colors = [Color(self.view.substr(color)) for color in color_regions]
+        return colors
+
+    def get_color_regions(self):
+        w3c = self.view.find_by_selector("support.constant.color.w3c-standard-color-name.css")
+        extra_web = self.view.find_by_selector("invalid.deprecated.color.w3c-non-standard-color-name.css")
+        hex_rgb = self.view.find_by_selector("constant.other.color.rgb-value.css")
+        return w3c + extra_web + hex_rgb
+
+
+class CssColorizeEventer(sublime_plugin.EventListener):
+    def on_modified(self, view):
+        self.view = view
+        if not self.file_is_css:
+            return []
+        view.window().run_command("css_colorize")
+
+    @property
+    def file_is_css(self):
+        any_point = self.view.sel()[0].begin()
+        file_scope = self.view.scope_name(any_point).split()[0]
+        if file_scope == 'source.css':
+            return True
