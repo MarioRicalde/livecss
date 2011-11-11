@@ -2,7 +2,6 @@
 from os import mkdir
 from os.path import join, exists, basename, dirname
 from shutil import rmtree as rm
-import time
 
 # sublime
 import sublime
@@ -15,7 +14,6 @@ from templates import *
 
 #TODO:
 # generate theme and syn files by lxml
-# improove generating opposite color (? use only white or black for fg)
 # add % rgb support
 
 # Constants
@@ -26,26 +24,24 @@ COLORIZED_PATH = join(USER_DIR_PATH, 'Colorized/')
 
 class CssColorsCommand(sublime_plugin.TextCommand):
     def run(self, edit):
-        # self.apply_original_syntax()
-        colors = self.colors_in_current_file()
-        if not colors:
-            return
+        color_regions = self.get_color_regions()
+        colors = self.get_colors(color_regions)
         state = State(colors)
-        if theme.is_colorized and not state.is_dirty:
-            self.apply_colorized_syntax()
+        if (theme.is_colorized and not state.is_dirty) or not colors:
             return
         self.prepare_env()
-        state.save()
-        # highlight(colors)
         generate_color_theme(colors)
-        colorize_regions(self.view, self._find_colors(), colors)
-        # self.apply_colorized_syntax()
+        colorize_regions(self.view, color_regions, colors)
 
-    def colors_in_current_file(self):
-        color_regions = self._find_colors()
-        # colors = set(Color(self.view.substr(color)) for color in color_regions)
+    def get_colors(self, color_regions):
         colors = [Color(self.view.substr(color)) for color in color_regions]
         return colors
+
+    def get_color_regions(self):
+        w3c = self.view.find_by_selector("support.constant.color.w3c-standard-color-name.css")
+        extra_web = self.view.find_by_selector("invalid.deprecated.color.w3c-non-standard-color-name.css")
+        hex_rgb = self.view.find_by_selector("constant.other.color.rgb-value.css")
+        return w3c + extra_web + hex_rgb
 
     def prepare_env(self):
         if not exists(COLORIZED_PATH):
@@ -53,18 +49,6 @@ class CssColorsCommand(sublime_plugin.TextCommand):
         else:
             rm(COLORIZED_PATH)
             mkdir(COLORIZED_PATH)
-
-    def apply_colorized_syntax(self):
-        self.view.set_syntax_file(COLORIZED_PATH + "/Colorized-CSS.tmLanguage")
-
-    def apply_original_syntax(self):
-        self.view.set_syntax_file("Packages/CSS/CSS.tmLanguage")
-
-    def _find_colors(self):
-        w3c = self.view.find_by_selector("support.constant.color.w3c-standard-color-name.css")
-        extra_web = self.view.find_by_selector("invalid.deprecated.color.w3c-non-standard-color-name.css")
-        hex_rgb = self.view.find_by_selector("constant.other.color.rgb-value.css")
-        return w3c + extra_web + hex_rgb
 
 
 class Color(object):
@@ -83,17 +67,6 @@ class Color(object):
                 color = "#{0[1]}0{0[2]}0{0[3]}0".format(color)
             hex_color = color
         return hex_color
-
-    @property
-    def syntax_template(self):
-        color = self.color
-        if color in named_colors:
-            t = '(%s)\\b' % color
-        elif not color.startswith('#'):
-            t = "(rgb)(\(%s\))(?x)" % color
-        else:
-            t = '(#)(%s)\\b' % self.normalized[1:]
-        return t
 
     @property
     def normalized(self):
@@ -131,20 +104,26 @@ class Color(object):
 
 class State:
     def __init__(self, colors):
+        self._settings = sublime.load_settings('Colorized.sublime-settings')
         self.colors = colors
+        self.save()
 
     def save(self):
-        settings = 'Colorized.sublime-settings'
-        s = sublime.load_settings(settings)
-        s.set('hash', str(hash(str(self.colors))))
-        sublime.save_settings(settings)
+        self.hash = str(hash(str(self.colors)))
 
     @property
     def is_dirty(self):
-        s = sublime.load_settings('Colorized.sublime-settings')
-        h = s.get('hash')
-        if h != str(hash(str(self.colors))):
+        if self.hash != str(hash(str(self.colors))):
             return True
+
+    @property
+    def hash(self):
+        return self._settings.get('hash')
+
+    @hash.setter
+    def hash(self, value):
+        self._settings.set('hash', value)
+        sublime.save_settings(settings)
 
 
 class theme(object):
@@ -186,41 +165,16 @@ class theme(object):
             return basename(cls.current_theme)
 
 
-def add_scopes(colors):
-    """
-    Add given scopes to syntax file, sufixed by 'css-colorize.css'
-    """
-
-    scopes_xml = [syntax_color_template.format(color.syntax_template,
-                  color.normalized[1:]) for color in colors]
-    return template.format('\n'.join(scopes_xml)).split()
-
-
-def generate_syntax(colors):
-    with open(PACKAGES_PATH + '/CSS/CSS.tmLanguage') as syn_file:
-        syn_file_content = syn_file.readlines()
-        new_rules = add_scopes(colors)
-        colorized = syn_file_content[0:553] + include.split() + syn_file_content[553:]
-        colorized = colorized[0:537] + new_rules + colorized[537:]
-
-    with open(COLORIZED_PATH + "Colorized-CSS.tmLanguage", 'w') as syntax_f:
-        syntax_f.write(''.join(colorized))
-
-
 def add_colors(colors):
-    """Add given scopes to syntax file, sufixed by 'css-colorize.css'"""
     colors = set(colors)
-    colors_xml = [theme_templ.format(color.undash, color.hex, color.opposite)
+    colors_xml = [theme_template.format(color.undash, color.hex, color.opposite)
                   for color in colors]
     return colors_xml
 
 
 def generate_color_theme(colors):
-    """highlight [scopes] with [colors]
-    `colors` - list of color names (if hex -> without #)
-    """
-
     theme_path = theme.current_theme
+
     with open(theme_path) as fp:
         theme_content = fp.readlines()
         new_colores = add_colors(colors)
@@ -235,15 +189,4 @@ def generate_color_theme(colors):
 def colorize_regions(view, regions, colors):
     regions_colors = zip(regions, colors)
     for r, c  in regions_colors:
-        print c, [r], c.undash
-        view.add_regions(str(r), [r], c.undash + '.css-colorize.css')
-
-
-def highlight(colors):
-    t_start = time.time()
-
-    generate_syntax(colors)
-    generate_color_theme(colors)
-
-    t_end = time.time()
-    print t_end - t_start
+        view.add_regions(str(r), [r], c.undash)
