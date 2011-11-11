@@ -26,22 +26,18 @@ COLORIZED_PATH = join(USER_DIR_PATH, 'Colorized/')
 
 class CssColorsCommand(sublime_plugin.TextCommand):
     def run(self, edit):
-        t_start = time.time()
         self.apply_original_syntax()
         colors = self.colors_in_current_file()
+        if not colors:
+            return
         state = State(colors)
-        print "theme.is_colorized", theme.is_colorized
-        if theme.is_colorized and not state.dirty:
+        if theme.is_colorized and not state.is_dirty:
             self.apply_colorized_syntax()
-            t_end = time.time()
-            print t_end - t_start
             return
         self.prepare_env()
         state.save()
         highlight(colors)
         self.apply_colorized_syntax()
-        t_end = time.time()
-        print t_end - t_start
 
     def colors_in_current_file(self):
         color_regions = self._find_colors()
@@ -80,6 +76,8 @@ class Color(object):
         elif not color.startswith('#'):
             hex_color = self._rgb_to_hex(tuple(color.split(',')))
         else:
+            if len(color) == 4:
+                color = "#{0[1]}0{0[2]}0{0[3]}0".format(color)
             hex_color = color
         return hex_color
 
@@ -91,8 +89,14 @@ class Color(object):
         elif not color.startswith('#'):
             t = "(rgb)(\(%s\))(?x)" % color
         else:
-            t = '(#)(%s)\\b' % self.undash
+            t = '(#)(%s)\\b' % self.normalized[1:]
         return t
+
+    @property
+    def normalized(self):
+        if len(self.color) == 4:
+            return self.color
+        return self.hex
 
     @property
     def undash(self):
@@ -100,9 +104,12 @@ class Color(object):
 
     @property
     def opposite(self):
-        opp_int = 16777215 - int(self.undash, 16)
-        opp_hex = hex(opp_int)
-        return "#" + opp_hex[0] + opp_hex[2:]
+        # opp_int = 16777215 - int(self.undash, 16)
+        # opp_hex = hex(opp_int)
+        # return "#" + opp_hex[0] + opp_hex[2:]
+        rgb = self._hex_to_rgb(self.hex)
+        diff = (255 - rgb[0], 255 - rgb[1], 255 - rgb[2])
+        return self._rgb_to_hex(diff)
 
     def __repr__(self):
         return self.color
@@ -117,6 +124,11 @@ class Color(object):
         # rgb: tuple of r,g,b values
         return '#%02x%02x%02x' % tuple(int(x) for x in rgb)
 
+    def _hex_to_rgb(self, value):
+      value = value.lstrip('#')
+      lv = len(value)
+      return tuple(int(value[i:i+lv/3], 16) for i in range(0, lv, lv/3))
+
 
 class State:
     def __init__(self, colors):
@@ -129,7 +141,7 @@ class State:
         sublime.save_settings(settings)
 
     @property
-    def dirty(self):
+    def is_dirty(self):
         s = sublime.load_settings('Colorized.sublime-settings')
         h = s.get('hash')
         if h != str(hash(str(self.colors))):
@@ -188,7 +200,7 @@ def add_scopes(colors):
     """
 
     scopes_xml = [syntax_color_template.format(color.syntax_template,
-                  color.undash) for color in colors]
+                  color.normalized[1:]) for color in colors]
     return template.format('\n'.join(scopes_xml)).split()
 
 
@@ -206,7 +218,7 @@ def generate_syntax(colors):
 def add_colors(colors):
     """Add given scopes to syntax file, sufixed by 'css-colorize.css'"""
 
-    colors_xml = [theme_templ.format(color.undash, color.hex, color.opposite)
+    colors_xml = [theme_templ.format(color.normalized[1:], color.hex, color.opposite)
                   for color in colors]
     return colors_xml
 
@@ -229,5 +241,10 @@ def generate_color_theme(colors):
 
 
 def highlight(colors):
+    t_start = time.time()
+
     generate_syntax(colors)
     generate_color_theme(colors)
+
+    t_end = time.time()
+    print t_end - t_start
