@@ -52,7 +52,7 @@ class CssColorsCommand(sublime_plugin.TextCommand):
             mkdir(COLORIZED_PATH)
 
     def apply_colorized_syntax(self):
-        self.view.set_syntax_file(COLORIZED_PATH + "Colorized-CSS.tmLanguage")
+        self.view.set_syntax_file(COLORIZED_PATH + "/Colorized-CSS.tmLanguage")
 
     def apply_original_syntax(self):
         self.view.set_syntax_file("Packages/CSS/CSS.tmLanguage")
@@ -100,14 +100,11 @@ class Color(object):
 
     @property
     def undash(self):
-        return self.hex[1:]
+        return self.hex.lstrip('#')
 
     @property
     def opposite(self):
-        # opp_int = 16777215 - int(self.undash, 16)
-        # opp_hex = hex(opp_int)
-        # return "#" + opp_hex[0] + opp_hex[2:]
-        rgb = self._hex_to_rgb(self.hex)
+        rgb = self._hex_to_rgb(self.undash)
         diff = (255 - rgb[0], 255 - rgb[1], 255 - rgb[2])
         return self._rgb_to_hex(diff)
 
@@ -124,10 +121,9 @@ class Color(object):
         # rgb: tuple of r,g,b values
         return '#%02x%02x%02x' % tuple(int(x) for x in rgb)
 
-    def _hex_to_rgb(self, value):
-      value = value.lstrip('#')
-      lv = len(value)
-      return tuple(int(value[i:i+lv/3], 16) for i in range(0, lv, lv/3))
+    def _hex_to_rgb(self, hex):
+        hex_len = len(hex)
+        return tuple(int(hex[i:i + hex_len / 3], 16) for i in range(0, hex_len, hex_len / 3))
 
 
 class State:
@@ -177,12 +173,6 @@ class theme(object):
         @property
         def path(cls):
             return dirname(cls.current_theme)
-
-        @property
-        def un_colorized_name(cls):
-            if cls.is_colorized:
-                return cls.current_theme
-            return cls.path + cls.name[10:]
 
         @property
         def colorized_name(cls):
