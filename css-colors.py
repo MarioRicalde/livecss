@@ -135,7 +135,7 @@ class theme(object):
         def colorized_name(cls):
             """Theme name with 'Colorized-' prefix"""
             if not cls.is_colorized:
-                return join(cls.path, 'Colorized-', cls.name)
+                return join(cls.path, 'Colorized-' + cls.name)
             return cls.current_theme
 
 
@@ -209,9 +209,21 @@ class CssColorizeCommand(sublime_plugin.TextCommand):
         return w3c + extra_web + hex_rgb
 
 
+class CssUnColorizeCommand(sublime_plugin.TextCommand):
+    def run(self, edit):
+        self.view.remove_regions("")
+
+
 class CssColorizeEventer(sublime_plugin.EventListener):
+    def on_load(self, view):
+        self.view = view
+        self.colorize()
+
     def on_modified(self, view):
         self.view = view
+        self.colorize()
+
+    def colorize(self):
         if not self.file_is_css:
             return []
         view.window().run_command("css_colorize")
