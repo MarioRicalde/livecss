@@ -26,7 +26,7 @@ COLORIZED_PATH = join(USER_DIR_PATH, 'Colorized/')
 
 class CssColorsCommand(sublime_plugin.TextCommand):
     def run(self, edit):
-        self.apply_original_syntax()
+        # self.apply_original_syntax()
         colors = self.colors_in_current_file()
         if not colors:
             return
@@ -36,12 +36,15 @@ class CssColorsCommand(sublime_plugin.TextCommand):
             return
         self.prepare_env()
         state.save()
-        highlight(colors)
-        self.apply_colorized_syntax()
+        # highlight(colors)
+        generate_color_theme(colors)
+        colorize_regions(self.view, self._find_colors(), colors)
+        # self.apply_colorized_syntax()
 
     def colors_in_current_file(self):
         color_regions = self._find_colors()
-        colors = set(Color(self.view.substr(color)) for color in color_regions)
+        # colors = set(Color(self.view.substr(color)) for color in color_regions)
+        colors = [Color(self.view.substr(color)) for color in color_regions]
         return colors
 
     def prepare_env(self):
@@ -100,7 +103,7 @@ class Color(object):
 
     @property
     def undash(self):
-        return self.hex.lstrip('#')
+        return self.normalized.lstrip('#')
 
     @property
     def opposite(self):
@@ -148,12 +151,12 @@ class theme(object):
     """Global object
     represents sublimetext color scheme
     """
+    _settings = sublime.load_settings('Base File.sublime-settings')
 
     class __metaclass__(type):
         @property
         def current_theme(cls):
-            s = sublime.load_settings('Base File.sublime-settings')
-            theme_path = s.get('color_scheme').split('/')
+            theme_path = cls._settings.get('color_scheme').split('/')
             if theme_path[0]:
                 theme = join(PACKAGES_PATH, *theme_path[1:])
             else:
@@ -162,8 +165,7 @@ class theme(object):
 
         @current_theme.setter
         def current_theme(cls, name):
-            s = sublime.load_settings("Base File.sublime-settings")
-            s.set('color_scheme', name)
+            cls._settings.set('color_scheme', name)
 
         @property
         def is_colorized(cls):
@@ -207,8 +209,8 @@ def generate_syntax(colors):
 
 def add_colors(colors):
     """Add given scopes to syntax file, sufixed by 'css-colorize.css'"""
-
-    colors_xml = [theme_templ.format(color.normalized[1:], color.hex, color.opposite)
+    colors = set(colors)
+    colors_xml = [theme_templ.format(color.undash, color.hex, color.opposite)
                   for color in colors]
     return colors_xml
 
@@ -228,6 +230,13 @@ def generate_color_theme(colors):
         f.write(''.join(colorized_theme))
 
     theme.current_theme = theme.colorized_name
+
+
+def colorize_regions(view, regions, colors):
+    regions_colors = zip(regions, colors)
+    for r, c  in regions_colors:
+        print c, [r], c.undash
+        view.add_regions(str(r), [r], c.undash + '.css-colorize.css')
 
 
 def highlight(colors):
