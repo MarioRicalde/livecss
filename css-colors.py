@@ -13,7 +13,6 @@ from templates import *
 #TODO:
 # generate theme and syn files by lxml
 # add % rgb support
-# don't colorize if colors's been deleted
 
 # Constants
 PACKAGES_PATH = sublime.packages_path()
@@ -61,6 +60,9 @@ class Color(object):
     def __repr__(self):
         return self.color
 
+    def __str__(self):
+        return self.color
+
     def __eq__(self, other):
         return self.color == other.color
 
@@ -81,29 +83,39 @@ class State(object):
     Uses hash of all colors in file to save state
     """
 
-    def __init__(self, colors, file_name):
+    def __init__(self, colors, regions, file_id):
         self._settings = sublime.load_settings('Colorized.sublime-settings')
         self.colors = colors
-        self.file_name = file_name
+        self.regions = regions
+        self.file_id = file_id
 
     def save(self):
-        self._hash = str(hash(str(self.colors)))
+        self._settings.set(self.file_id, {'id': self.current_state})
 
     @property
     def is_dirty(self):
         """Indicates if new colors appeared"""
-        if self._hash != str(hash(str(self.colors))):
+        current_state = self.current_state
+        saved_state = self.saved_state
+        diff = list_diff(current_state, saved_state)
+        if diff:
             return True
 
     @property
-    def _hash(self):
-        s = self._settings.get(self.file_name)
-        return s['hash']
+    def saved_state(self):
+        s = self._settings.get(self.file_id)
+        if not s:
+            return []
+        return [str(x) for x in s['id']]
 
-    @_hash.setter
-    def _hash(self, value):
-        self._settings.set(self.file_name, {'hash': value})
-        sublime.save_settings('Colorized.sublime-settings')
+    @property
+    def current_state(self):
+        colors = [str(c) for c in self.colors]
+        regions = [str(r) for r in self.regions]
+        return [str(x) for x in zip(regions, colors)]
+
+
+list_diff = lambda l1, l2: [x for x in l1 if x not in l2]
 
 
 class theme(object):
@@ -201,8 +213,10 @@ class CssColorizeCommand(sublime_plugin.TextCommand):
     def run(self, edit):
         color_regions = self.get_color_regions()
         colors = self.get_colors(color_regions)
-        state = State(colors, self.view.file_name())
+        file_id = self.view.file_name() or str(self.view.buffer_id())
+        state = State(color_regions, colors, file_id)
         if not colors or theme.is_colorized and not state.is_dirty:
+            state.save()
             return []
         state.save()
         generate_color_theme(colors)
