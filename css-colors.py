@@ -1,5 +1,7 @@
 # stdlib
 from os.path import join, basename, dirname
+from plistlib import readPlist as read_plist
+from plistlib import writePlist as write_plist
 
 # sublime
 import sublime
@@ -13,6 +15,9 @@ from templates import *
 #TODO:
 # generate theme and syn files by lxml
 # add % rgb support
+
+# fix:
+# file opened, colorized, closed, openend -> state didn't change
 
 # Constants
 PACKAGES_PATH = sublime.packages_path()
@@ -162,15 +167,18 @@ class theme(object):
 
 
 def add_colors(colors):
-    """Returns xml ready to be inserted in color theme
-
-    Arguments:
-    colors: [Color]
-    """
-
-    colors_xml = [theme_template.format(color.undash, color.hex, color.opposite)
-                  for color in colors]
-    return colors_xml
+    plist = []
+    for color in colors:
+        el = {
+        'name': color.undash,
+        'scope': color.undash,
+        'settings': {
+            'background': color.hex,
+            'foreground': color.opposite
+                    }
+            }
+        plist.append(el)
+    return plist
 
 
 def generate_color_theme(colors):
@@ -182,16 +190,11 @@ def generate_color_theme(colors):
     """
 
     theme_path = theme.current_theme
-
-    with open(theme_path, 'r') as current_theme_file:
-        # for now we just insert new colors after 8-th line
-        # FIXME: generate xml instead
-        current_theme_content = current_theme_file.readlines()
-        new_colores = add_colors(set(colors))
-        colorized_theme_content = current_theme_content[0:8] + new_colores + current_theme_content[8:]
-
-    with open(theme.colorized_name, 'w') as colorized_theme_file:
-        colorized_theme_file.write(''.join(colorized_theme_content))
+    plist = read_plist(theme_path)
+    new_colors = add_colors(set(colors))
+    for el in new_colors:
+        plist['settings'].append(el)
+    write_plist(plist, theme.colorized_name)
 
     theme.current_theme = theme.colorized_name
 
