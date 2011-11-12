@@ -130,7 +130,6 @@ class State(object):
 list_diff = lambda l1, l2: [x for x in l1 if x not in l2]
 
 
-
 class theme(object):
     """Global object represents ST color scheme """
 
@@ -170,23 +169,24 @@ class theme(object):
 
         @property
         def uncolorized_name(cls):
+            """Remove 'Colorized-' prefix from theme's name"""
+
             if cls.is_colorized:
                 return join(cls.path, cls.name.lstrip('Colorized-'))
 
 
-def add_colors(colors):
-    plist = []
-    for color in colors:
-        el = {
-        'name': color.undash,
-        'scope': color.undash,
-        'settings': {
-            'background': color.hex,
-            'foreground': color.opposite
-                    }
-            }
-        plist.append(el)
-    return plist
+def template(color):
+    """Template dict to use in color theme plist generating"""
+
+    el = {
+    'name': color.undash,
+    'scope': color.undash,
+    'settings': {
+        'background': color.hex,
+        'foreground': color.opposite
+                }
+        }
+    return el
 
 
 def generate_color_theme(colors):
@@ -198,11 +198,11 @@ def generate_color_theme(colors):
     """
 
     theme_path = theme.current_theme
-    plist = read_plist(theme_path)
-    new_colors = add_colors(set(colors))
+    theme_plist = read_plist(theme_path)
+    new_colors = (template(color) for color in set(colors))
     for el in new_colors:
-        plist['settings'].append(el)
-    write_plist(plist, theme.colorized_name)
+        theme_plist['settings'].append(el)
+    write_plist(theme_plist, theme.colorized_name)
 
     theme.current_theme = theme.colorized_name
 
@@ -236,10 +236,14 @@ class CssColorizeCommand(sublime_plugin.TextCommand):
         colorize_regions(self.view, color_regions, colors)
 
     def get_colors(self, color_regions):
+        """Turnes regions into [Color]"""
         colors = [Color(self.view.substr(color)) for color in color_regions]
         return colors
 
     def get_color_regions(self):
+        """Search for color properties in current css file.
+        Returns sublime.Region"""
+
         w3c = self.view.find_by_selector("support.constant.color.w3c-standard-color-name.css")
         extra_web = self.view.find_by_selector("invalid.deprecated.color.w3c-non-standard-color-name.css")
         hex_rgb = self.view.find_by_selector("constant.other.color.rgb-value.css")
@@ -272,8 +276,7 @@ class CssColorizeEventer(sublime_plugin.EventListener):
     def colorize(self):
         if not self.file_is_css:
             return []
-        if not self.view.window():
-            return []
+
         self.view.window().run_command("css_colorize")
 
     @property
