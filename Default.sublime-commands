@@ -1,4 +1,6 @@
 [
-    { "caption": "css_colorize", "command": "css_colorize"},
+    { "caption": "css_colorize",
+      "command": "css_colorize",
+      "args": {"erase_state": "True"}},
     { "caption": "css_uncolorize", "command": "css_uncolorize"}
 ]

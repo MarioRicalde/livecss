@@ -9,7 +9,6 @@ import sublime_plugin
 
 # local improrts
 from colors import named_colors
-from templates import *
 
 
 #TODO:
@@ -95,23 +94,26 @@ class State(object):
         self.file_id = file_id
 
     def save(self):
-        self._settings.set(self.file_id, {'id': self.current_state})
+        self._settings.set('state', {self.file_id: self.current_state})
 
     @property
     def is_dirty(self):
         """Indicates if new colors appeared"""
         current_state = self.current_state
         saved_state = self.saved_state
+        saved_colors = [x.split(',')[0][2:-1] for x in saved_state]
+        if saved_colors == self.colors:
+            return
         diff = list_diff(current_state, saved_state)
         if diff:
             return True
 
     @property
     def saved_state(self):
-        s = self._settings.get(self.file_id)
+        s = self._settings.get('state')
         if not s:
             return []
-        return [str(x) for x in s['id']]
+        return [str(x) for x in s[self.file_id]]
 
     @property
     def current_state(self):
@@ -119,8 +121,14 @@ class State(object):
         regions = [str(r) for r in self.regions]
         return [str(x) for x in zip(regions, colors)]
 
+    def erase(self):
+        s = self._settings.get('state')
+        if s:
+            self._settings.erase('state')
+
 
 list_diff = lambda l1, l2: [x for x in l1 if x not in l2]
+
 
 
 class theme(object):
@@ -213,11 +221,13 @@ def colorize_regions(view, regions, colors):
 
 
 class CssColorizeCommand(sublime_plugin.TextCommand):
-    def run(self, edit):
+    def run(self, edit, erase_state=False):
         color_regions = self.get_color_regions()
         colors = self.get_colors(color_regions)
         file_id = self.view.file_name() or str(self.view.buffer_id())
         state = State(color_regions, colors, file_id)
+        if erase_state:
+            state.erase()
         if not colors or theme.is_colorized and not state.is_dirty:
             state.save()
             return []
