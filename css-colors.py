@@ -1,5 +1,5 @@
 # stdlib
-from os.path import join, basename, dirname
+from os.path import join, basename, dirname, normpath
 from plistlib import readPlist as read_plist
 from plistlib import writePlist as write_plist
 
@@ -142,9 +142,10 @@ class theme(object):
         @property
         def current_theme(cls):
             theme_path = cls._settings.get('color_scheme')
+
             if theme_path.startswith('Packages'):
                 theme_path = join(SUBLIME_PATH, theme_path)
-            return theme_path
+            return normpath(theme_path)
 
         @current_theme.setter
         def current_theme(cls, name):
