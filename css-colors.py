@@ -99,6 +99,7 @@ class State(object):
     @property
     def is_dirty(self):
         """Indicates if new colors appeared"""
+
         current_state = self.current_state
         saved_state = self.saved_state
         saved_colors = [x.split(',')[0][2:-1] for x in saved_state]
@@ -110,8 +111,10 @@ class State(object):
 
     @property
     def saved_state(self):
+        """Returns saved colors and regions if any"""
+
         s = self._settings.get('state')
-        if not s:
+        if not s or not s.get(self.file_id):
             return []
         return [str(x) for x in s[self.file_id]]
 
@@ -220,64 +223,60 @@ def colorize_regions(view, regions, colors):
         view.add_regions(str(r), [r], c.undash)
 
 
+def colorize_css(view, erase_state):
+    color_regions = get_color_regions(view)
+    colors = get_colors(view, color_regions)
+    file_id = view.file_name() or str(view.buffer_id())
+    state = State(color_regions, colors, file_id)
+    if erase_state:
+        state.erase()
+    if not colors or theme.is_colorized and not state.is_dirty:
+        state.save()
+        return []
+    state.save()
+    generate_color_theme(colors)
+    colorize_regions(view, color_regions, colors)
+
+
+def get_colors(view, color_regions):
+    """Turnes regions into [Color]"""
+    colors = [Color(view.substr(color)) for color in color_regions]
+    return colors
+
+
+def get_color_regions(view):
+    """Search for color properties in current css file.
+    Returns sublime.Region"""
+
+    w3c = view.find_by_selector("support.constant.color.w3c-standard-color-name.css")
+    extra_web = view.find_by_selector("invalid.deprecated.color.w3c-non-standard-color-name.css")
+    hex_rgb = view.find_by_selector("constant.other.color.rgb-value.css")
+    return w3c + extra_web + hex_rgb
+
+
 class CssColorizeCommand(sublime_plugin.TextCommand):
     def run(self, edit, erase_state=False):
-        color_regions = self.get_color_regions()
-        colors = self.get_colors(color_regions)
-        file_id = self.view.file_name() or str(self.view.buffer_id())
-        state = State(color_regions, colors, file_id)
-        if erase_state:
-            state.erase()
-        if not colors or theme.is_colorized and not state.is_dirty:
-            state.save()
-            return []
-        state.save()
-        generate_color_theme(colors)
-        colorize_regions(self.view, color_regions, colors)
-
-    def get_colors(self, color_regions):
-        """Turnes regions into [Color]"""
-        colors = [Color(self.view.substr(color)) for color in color_regions]
-        return colors
-
-    def get_color_regions(self):
-        """Search for color properties in current css file.
-        Returns sublime.Region"""
-
-        w3c = self.view.find_by_selector("support.constant.color.w3c-standard-color-name.css")
-        extra_web = self.view.find_by_selector("invalid.deprecated.color.w3c-non-standard-color-name.css")
-        hex_rgb = self.view.find_by_selector("constant.other.color.rgb-value.css")
-        return w3c + extra_web + hex_rgb
+        colorize_css(self.view, erase_state)
 
 
 class CssUncolorizeCommand(sublime_plugin.TextCommand):
     def run(self, edit):
-        colorized_regions = self.get_color_regions()
+        colorized_regions = self.get_color_regions(self.view)
         for region in colorized_regions:
             self.view.erase_regions(str(region))
         theme.current_theme = theme.uncolorized_name
-
-    def get_color_regions(self):
-        w3c = self.view.find_by_selector("support.constant.color.w3c-standard-color-name.css")
-        extra_web = self.view.find_by_selector("invalid.deprecated.color.w3c-non-standard-color-name.css")
-        hex_rgb = self.view.find_by_selector("constant.other.color.rgb-value.css")
-        return w3c + extra_web + hex_rgb
 
 
 class CssColorizeEventer(sublime_plugin.EventListener):
     def on_load(self, view):
         self.view = view
-        self.colorize()
+        if self.file_is_css:
+            colorize_css(view, True)
 
     def on_modified(self, view):
         self.view = view
-        self.colorize()
-
-    def colorize(self):
-        if not self.file_is_css:
-            return []
-
-        self.view.window().run_command("css_colorize")
+        if self.file_is_css:
+            colorize_css(view, False)
 
     @property
     def file_is_css(self):
