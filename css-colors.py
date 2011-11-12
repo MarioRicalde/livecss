@@ -14,6 +14,7 @@ from colors import named_colors
 #TODO:
 # maybe rm out-dated theme files on fist run
 # add % rgb support
+# add user options
 
 # fix:
 # file opened, colorized, closed, openend -> state didn't change
@@ -35,7 +36,11 @@ class Color(object):
         if color in named_colors:
             hex_color = named_colors[color]
         elif not color.startswith('#'):
-            hex_color = self._rgb_to_hex(tuple(color.split(',')))
+            color = color.split(',')
+            if len(color) == 4:
+                hex_color = self._rgb_to_hex(tuple(color[:-1]))
+            else:
+                hex_color = self._rgb_to_hex(tuple(color))
         else:
             if len(color) == 4:
                 color = "#{0[1]}0{0[2]}0{0[3]}0".format(color)
