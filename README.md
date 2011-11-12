@@ -1,6 +1,6 @@
 #Introduction:
 This Script underlays the hexadecimal, rgb or named CSS color codes with their real color.
-The foreground color is selected appositely.
+The foreground color is selected oppositely.
 
 #Screenshot
 ![shot](http://i.imgur.com/HgGWH.png)
