@@ -15,7 +15,9 @@ WEB_COLORS = {
     "Blue": "#0000FF",
     "Navy": "#000080",
     "Fuchsia": "#FF00FF",
-    "Purple": "#800080"}
+    "Purple": "#800080",
+    "Orange": "#FF7F00"
+    }
 
 WEB_EXTRA_COLORS = {
 'AliceBlue'            : '#F0F8FF',
