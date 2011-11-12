@@ -5,8 +5,11 @@ The foreground color is selected appositely.
 #Screenshot
 ![shot](http://i.imgur.com/HgGWH.png)
 
+#Featuers:
+1. On-the-fly colorizing
+2. Colorizing/uncolorizing using ST commands
+
 #Limitations:
-1. It can only work by calling a command.
-2. Due to limitation of current sublimetext api
-it colorize regions by creating new syntax and theme files.
-3. Still in alpha, so may be full of bugs.
+1. Due to limitation of current ST API
+it colorizes regions by creating theme file.
+2. Still in alpha, so may be full of bugs.
