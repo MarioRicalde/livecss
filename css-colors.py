@@ -130,6 +130,7 @@ class State(object):
 
 
 list_diff = lambda l1, l2: [x for x in l1 if x not in l2]
+escape = lambda s: "\'" + s + "\'"
 
 
 class theme(object):
@@ -181,7 +182,7 @@ def template(color):
     """Template dict to use in color theme plist generating"""
 
     el = {
-    'name': color.color,
+    'name': escape(color.color),
     'scope': color.color,
     'settings': {
         'background': color.hex,
