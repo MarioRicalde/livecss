@@ -43,14 +43,8 @@ class Color(object):
         return hex_color
 
     @property
-    def normalized(self):
-        if len(self.color) == 4:
-            return self.color
-        return self.hex
-
-    @property
     def undash(self):
-        return self.normalized.lstrip('#')
+        return self.hex.lstrip('#')
 
     @property
     def opposite(self):
@@ -182,8 +176,8 @@ def template(color):
     """Template dict to use in color theme plist generating"""
 
     el = {
-    'name': color.undash,
-    'scope': color.undash,
+    'name': color.color,
+    'scope': color.color,
     'settings': {
         'background': color.hex,
         'foreground': color.opposite
@@ -220,7 +214,7 @@ def colorize_regions(view, regions, colors):
 
     regions_colors = zip(regions, colors)
     for r, c  in regions_colors:
-        view.add_regions(str(r), [r], c.undash)
+        view.add_regions(str(r), [r], c.color)
 
 
 def colorize_css(view, erase_state):
@@ -261,7 +255,7 @@ class CssColorizeCommand(sublime_plugin.TextCommand):
 
 class CssUncolorizeCommand(sublime_plugin.TextCommand):
     def run(self, edit):
-        colorized_regions = self.get_color_regions(self.view)
+        colorized_regions = get_color_regions(self.view)
         for region in colorized_regions:
             self.view.erase_regions(str(region))
         theme.current_theme = theme.uncolorized_name
