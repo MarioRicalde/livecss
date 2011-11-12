@@ -13,3 +13,6 @@ The foreground color is selected oppositely.
 1. Due to limitation of current ST API
 it colorizes regions by creating theme file.
 2. Still in alpha, so may be full of bugs.
+
+#Known bugs:
+1. Wrong colorization on changing theme

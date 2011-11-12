@@ -12,7 +12,7 @@ from colors import named_colors
 
 
 #TODO:
-# generate theme and syn files by lxml
+# maybe rm out-dated theme files on fist run
 # add % rgb support
 
 # fix:
