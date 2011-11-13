@@ -13,8 +13,6 @@ import sublime_plugin
 # local improrts
 from colors import named_colors
 
-#TODO:
-# fix updating state if still typing rgb color
 # add_regions only for changed regions
 
 # Constants
@@ -42,6 +40,11 @@ class user_settings(object):
             # cls._init_if_not_exists()
             s = cls._settings.get('dynamic_highlight')
             return s
+
+        @dynamic_highlight.setter
+        def dynamic_highlight(cls, value):
+            cls._settings.set('dynamic_highlight', value)
+            cls.save()
 
         def save(cls):
             sublime.save_settings(cls._settings_file)
@@ -140,6 +143,7 @@ class State(object):
 
         saved_colors = self.saved_state['colors'][1:-1].split()
         if len(saved_colors) < len(self.colors):
+
             return True
 
     @property
@@ -288,10 +292,13 @@ def colorize_css(view, erase_state):
     if erase_state:
         state.erase()
     if not colors or theme.is_colorized and not state.need_redraw:
+
         state.save()
         return
+
     colorize_regions(view, color_regions, colors)
     if state.need_generate_new_color_file:
+
         generate_color_theme(colors)
         state.save()
     state.save()
@@ -354,3 +361,11 @@ class CssColorizeEventer(sublime_plugin.EventListener):
         file_scope = self.view.scope_name(any_point).split()[0]
         if file_scope == 'source.css':
             return True
+
+
+class ToggleAutoCssColorize(sublime_plugin.WindowCommand):
+    def run(self):
+        if user_settings.dynamic_highlight:
+            user_settings.dynamic_highlight = False
+        else:
+            user_settings.dynamic_highlight = True
