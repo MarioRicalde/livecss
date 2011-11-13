@@ -154,6 +154,7 @@ class State(object):
 
         saved_colors = self.saved_state['colors'][1:-1].split()
         if len(saved_colors) < len(self.colors):
+
             return True
 
     @property
