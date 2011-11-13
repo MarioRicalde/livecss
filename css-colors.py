@@ -346,8 +346,15 @@ class CssColorizeCommand(sublime_plugin.TextCommand):
 
 class CssUncolorizeCommand(sublime_plugin.TextCommand):
     def run(self, edit):
-        colorized_regions = get_color_regions(self.view)
-        erase_colorized_regions(self.view, colorized_regions)
+        count = 0
+        while count != -1:
+            name = "css_color_%d" % count
+            region = self.view.get_regions(name)
+            if len(region) != 0:
+                self.view.erase_regions(name)
+                count += 1
+            else:
+                count = -1
         rm(theme.abspash)
         rm(theme.abspash + '.cache')
         theme.set(theme.uncolorized_path)
