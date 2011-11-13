@@ -73,7 +73,8 @@ class Color(object):
         else:
             if len(color) == 4:  # FIXME
                 # 3 sign hex
-                color = "#{0[1]}0{0[2]}0{0[3]}0".format(color)
+                color = "#{0[1]}{0[1]}{0[2]}{0[2]}{0[3]}{0[3]}".format(color)
+                print color
             hex_color = color
 
         return hex_color
@@ -85,7 +86,7 @@ class Color(object):
     @property
     def opposite(self):
         r, g, b = self._hex_to_rgb(self.undash)
-        brightness = (r + r + b + g + g + g) / 6
+        brightness = (r + r + b + b + g + g) / 6
         if brightness > 130:
             return '#000000'
         else:
@@ -139,11 +140,10 @@ class State(object):
 
     @property
     def need_redraw(self):
-        """Indicates if colors wers deleted from buffer"""
+        """Indicates if colors were deleted from buffer"""
 
         saved_colors = self.saved_state['colors'][1:-1].split()
         if len(saved_colors) < len(self.colors):
-
             return True
 
     @property
@@ -172,6 +172,7 @@ class State(object):
 
 list_diff = lambda l1, l2: [x for x in l1 if x not in l2]
 escape = lambda s: "\'" + s + "\'"
+
 
 #TODO: add fallbacks on errors
 class theme(object):
@@ -237,13 +238,13 @@ def template(color):
     """Template dict to use in color theme plist generating"""
 
     el = {
-    'name': escape(color.color),
-    'scope': color.color,
-    'settings': {
-        'background': color.hex,
-        'foreground': color.opposite
-                }
+        'name': escape(color.hex),
+        'scope': color.hex,
+        'settings': {
+            'background': color.hex,
+            'foreground': color.opposite
         }
+    }
     return el
 
 
@@ -280,8 +281,21 @@ def colorize_regions(view, regions, colors):
     """
 
     regions_colors = zip(regions, colors)
+    # Clear all available colored regions
+    count = 0
+    while count != -1:
+        name = "css_color_%d" % count
+        region = view.get_regions(name)
+        if len(region) != 0:
+            view.erase_regions(name)
+            count += 1
+        else:
+            count = -1
+    # Color regions
+    count = 0
     for r, c  in regions_colors:
-        view.add_regions(str(r), [r], c.color)
+        name = "css_color_%d" % count
+        view.add_regions(name, [r], c.hex)
 
 
 def colorize_css(view, erase_state):
@@ -321,7 +335,7 @@ def get_color_regions(view):
     return w3c + extra_web + hex_rgb + rbg_percent
 
 
-def erase_colized_regions(view, regions):
+def erase_colorized_regions(view, regions):
     for region in regions:
         view.erase_regions(str(region))
 
@@ -334,10 +348,11 @@ class CssColorizeCommand(sublime_plugin.TextCommand):
 class CssUncolorizeCommand(sublime_plugin.TextCommand):
     def run(self, edit):
         colorized_regions = get_color_regions(self.view)
-        erase_colized_regions(self.view, colorized_regions)
+        erase_colorized_regions(self.view, colorized_regions)
         rm(theme.abspash)
         rm(theme.abspash + '.cache')
         theme.set(theme.uncolorized_path)
+
 
 # TODO: activate on change
 class CssColorizeEventer(sublime_plugin.EventListener):
