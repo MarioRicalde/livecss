@@ -1,7 +1,10 @@
 # stdlib
-from os.path import join, basename, dirname, normpath
+from os import remove as rm
+from os.path import join, basename, dirname, normpath, relpath
 from plistlib import readPlist as read_plist
 from plistlib import writePlist as write_plist
+from random import randint
+import re
 
 # sublime
 import sublime
@@ -12,12 +15,8 @@ from colors import named_colors
 
 
 #TODO:
-# maybe rm out-dated theme files on fist run
-# add % rgb support
+# fix updating state if still typing rgb color
 # add user options
-
-# fix:
-# file opened, colorized, closed, openend -> state didn't change
 
 # Constants
 PACKAGES_PATH = sublime.packages_path()
@@ -36,15 +35,15 @@ class Color(object):
         if color in named_colors:
             hex_color = named_colors[color]
         elif not color.startswith('#'):
+            # if rgb
             color = color.split(',')
-            if len(color) == 4:
-                hex_color = self._rgb_to_hex(tuple(color[:-1]))
-            else:
-                hex_color = self._rgb_to_hex(tuple(color))
+            hex_color = self._rgb_to_hex(tuple(color))
         else:
-            if len(color) == 4:
+            if len(color) == 4:  # FIXME
+                # 3 sign hex
                 color = "#{0[1]}0{0[2]}0{0[3]}0".format(color)
             hex_color = color
+
         return hex_color
 
     @property
@@ -61,19 +60,29 @@ class Color(object):
             return '#ffffff'
 
     def __repr__(self):
-        return self.color
+        return self.hex
 
     def __str__(self):
-        return self.color
+        return self.hex
 
     def __eq__(self, other):
-        return self.color == other.color
+        return self.color == other
 
     def __hash__(self):
         return hash(self.color)
 
     def _rgb_to_hex(self, rgb):
-        # rgb: tuple of r,g,b values
+        if str(rgb[0])[-1] == '%':
+            # percentage notation
+            r = int(rgb[0].rstrip('%')) * 255 / 100
+            g = int(rgb[1].rstrip('%')) * 255 / 100
+            b = int(rgb[2].rstrip('%')) * 255 / 100
+            return self._rgb_to_hex((r, g, b))
+
+        if len(rgb) == 4:
+            #rgba
+            rgb = rgb[1:]
+
         return '#%02x%02x%02x' % tuple(int(x) for x in rgb)
 
     def _hex_to_rgb(self, hex):
@@ -93,35 +102,34 @@ class State(object):
         self.file_id = file_id
 
     def save(self):
-        self._settings.set('state', {self.file_id: self.current_state})
+        state = {self.file_id: {'colors': str(self.colors)}}
+        self._settings.set('state', state)
 
     @property
-    def is_dirty(self):
-        """Indicates if new colors appeared"""
+    def need_redraw(self):
+        """Indicates if colors wers deleted from buffer"""
 
-        current_state = self.current_state
-        saved_state = self.saved_state
-        saved_colors = [x.split(',')[0][2:-1] for x in saved_state]
-        if saved_colors == self.colors:
-            return
-        diff = list_diff(current_state, saved_state)
-        if diff:
+        saved_colors = self.saved_state['colors'][1:-1].split()
+        if len(saved_colors) < len(self.colors):
+            return True
+
+    @property
+    def need_generate_new_color_file(self):
+        saved_colors = self.saved_state['colors'][1:-1].split(',')
+        saved_colors = [c.strip() for c in saved_colors]
+        if set(self.colors) - set(saved_colors):
             return True
 
     @property
     def saved_state(self):
-        """Returns saved colors and regions if any"""
+        """Returns saved colors and regions if any
+        or empty state
+        """
 
         s = self._settings.get('state')
         if not s or not s.get(self.file_id):
-            return []
-        return [str(x) for x in s[self.file_id]]
-
-    @property
-    def current_state(self):
-        colors = [str(c) for c in self.colors]
-        regions = [str(r) for r in self.regions]
-        return [str(x) for x in zip(regions, colors)]
+            return {'colors': '[]'}
+        return s[self.file_id]
 
     def erase(self):
         s = self._settings.get('state')
@@ -132,51 +140,64 @@ class State(object):
 list_diff = lambda l1, l2: [x for x in l1 if x not in l2]
 escape = lambda s: "\'" + s + "\'"
 
-
+#TODO: add fallbacks on errors
 class theme(object):
     """Global object represents ST color scheme """
 
     _settings = sublime.load_settings('Base File.sublime-settings')
+    _prefix = 'Colorized-'
 
     class __metaclass__(type):
         @property
-        def current_theme(cls):
-            theme_path = cls._settings.get('color_scheme')
+        def abspash(cls):
+            theme_path = cls._settings.get('color_scheme') or ""
 
             if theme_path.startswith('Packages'):
                 theme_path = join(SUBLIME_PATH, theme_path)
+
             return normpath(theme_path)
 
-        @current_theme.setter
-        def current_theme(cls, name):
-            cls._settings.set('color_scheme', name)
+        @property
+        def relpath(cls):
+            return relpath(cls.abspash, SUBLIME_PATH)
 
         @property
-        def is_colorized(cls):
-            if cls.name.startswith('Colorized-'):
-                return True
-
-        @property
-        def path(cls):
-            return dirname(cls.current_theme)
+        def dirname(cls):
+            return dirname(cls.abspash)
 
         @property
         def name(cls):
-            return basename(cls.current_theme)
+            return basename(cls.abspash)
 
         @property
-        def colorized_name(cls):
-            """Theme name with 'Colorized-' prefix"""
-            if not cls.is_colorized:
-                return join(cls.path, 'Colorized-' + cls.name)
-            return cls.current_theme
+        def is_colorized(cls):
+            if cls.name.startswith(cls._prefix):
+                return True
+
+        def set(cls, theme):
+            """theme: abs or relpath to PACKAGES_PATH"""
+            cls._settings.set('color_scheme', theme)
+
+        @property
+        def colorized_path(cls):
+            return join(cls.dirname, cls.colorized_name)
+
+        @property
+        def uncolorized_path(cls):
+            return join(cls.dirname, cls.uncolorized_name)
 
         @property
         def uncolorized_name(cls):
-            """Remove 'Colorized-' prefix from theme's name"""
-
             if cls.is_colorized:
-                return join(cls.path, cls.name.lstrip('Colorized-'))
+                s = re.search(cls._prefix + "(\d+-)?(?P<Name>.*)", cls.name)
+                theme_name = s.group('Name')
+                return theme_name
+            return cls.name
+
+        @property
+        def colorized_name(cls):
+            r = str(randint(1, 10 ** 15)) + '-'
+            return cls._prefix + r + cls.uncolorized_name
 
 
 def template(color):
@@ -201,14 +222,20 @@ def generate_color_theme(colors):
     colors: [Color]
     """
 
-    theme_path = theme.current_theme
+    theme_path = theme.abspash
     theme_plist = read_plist(theme_path)
+    colorized_theme_path = theme.colorized_path
+
     new_colors = (template(color) for color in set(colors))
     for el in new_colors:
         theme_plist['settings'].append(el)
-    write_plist(theme_plist, theme.colorized_name)
+    write_plist(theme_plist, colorized_theme_path)
 
-    theme.current_theme = theme.colorized_name
+    if theme.is_colorized:
+        rm(theme.abspash)
+        rm(theme.abspash + '.cache')
+
+    theme.set(colorized_theme_path)
 
 
 def colorize_regions(view, regions, colors):
@@ -228,15 +255,17 @@ def colorize_css(view, erase_state):
     color_regions = get_color_regions(view)
     colors = get_colors(view, color_regions)
     file_id = view.file_name() or str(view.buffer_id())
-    state = State(color_regions, colors, file_id)
-    if erase_state:
+    state = State(colors, color_regions, file_id)
+    if erase_state == 'True':
         state.erase()
-    if not colors or theme.is_colorized and not state.is_dirty:
+    if not colors or theme.is_colorized and not state.need_redraw:
         state.save()
-        return []
-    state.save()
-    generate_color_theme(colors)
+        return
     colorize_regions(view, color_regions, colors)
+    if state.need_generate_new_color_file:
+        generate_color_theme(colors)
+        state.save()
+    state.save()
 
 
 def get_colors(view, color_regions):
@@ -252,7 +281,13 @@ def get_color_regions(view):
     w3c = view.find_by_selector("support.constant.color.w3c-standard-color-name.css")
     extra_web = view.find_by_selector("invalid.deprecated.color.w3c-non-standard-color-name.css")
     hex_rgb = view.find_by_selector("constant.other.color.rgb-value.css")
-    return w3c + extra_web + hex_rgb
+    rbg_percent = view.find_by_selector("constant.other.color.rgb-percentage.css")
+    return w3c + extra_web + hex_rgb + rbg_percent
+
+
+def erase_colized_regions(view, regions):
+    for region in regions:
+        view.erase_regions(str(region))
 
 
 class CssColorizeCommand(sublime_plugin.TextCommand):
@@ -263,9 +298,10 @@ class CssColorizeCommand(sublime_plugin.TextCommand):
 class CssUncolorizeCommand(sublime_plugin.TextCommand):
     def run(self, edit):
         colorized_regions = get_color_regions(self.view)
-        for region in colorized_regions:
-            self.view.erase_regions(str(region))
-        theme.current_theme = theme.uncolorized_name
+        erase_colized_regions(self.view, colorized_regions)
+        rm(theme.abspash)
+        rm(theme.abspash + '.cache')
+        theme.set(theme.uncolorized_path)
 
 
 class CssColorizeEventer(sublime_plugin.EventListener):
