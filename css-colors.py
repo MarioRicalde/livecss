@@ -74,7 +74,6 @@ class Color(object):
             if len(color) == 4:  # FIXME
                 # 3 sign hex
                 color = "#{0[1]}{0[1]}{0[2]}{0[2]}{0[3]}{0[3]}".format(color)
-                print color
             hex_color = color
 
         return hex_color
