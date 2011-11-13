@@ -20,6 +20,17 @@ PACKAGES_PATH = sublime.packages_path()
 SUBLIME_PATH = dirname(PACKAGES_PATH)
 
 
+def clear_css_regions(view):
+    count = 0
+    while count != -1:
+        name = "css_color_%d" % count
+        if len(view.get_regions(name)) != 0:
+            view.erase_regions(name)
+            count += 1
+        else:
+            count = -1
+
+
 class user_settings(object):
     """Global object represents user settings
     """
@@ -281,15 +292,7 @@ def colorize_regions(view, regions, colors):
 
     regions_colors = zip(regions, colors)
     # Clear all available colored regions
-    count = 0
-    while count != -1:
-        name = "css_color_%d" % count
-        region = view.get_regions(name)
-        if len(region) != 0:
-            view.erase_regions(name)
-            count += 1
-        else:
-            count = -1
+    clear_css_regions(view)
     # Color regions
     count = 0
     for r, c  in regions_colors:
@@ -346,15 +349,7 @@ class CssColorizeCommand(sublime_plugin.TextCommand):
 
 class CssUncolorizeCommand(sublime_plugin.TextCommand):
     def run(self, edit):
-        count = 0
-        while count != -1:
-            name = "css_color_%d" % count
-            region = self.view.get_regions(name)
-            if len(region) != 0:
-                self.view.erase_regions(name)
-                count += 1
-            else:
-                count = -1
+        clear_css_regions(self.view)
         rm(theme.abspash)
         rm(theme.abspash + '.cache')
         theme.set(theme.uncolorized_path)
