@@ -13,14 +13,43 @@ import sublime_plugin
 # local improrts
 from colors import named_colors
 
-
 #TODO:
 # fix updating state if still typing rgb color
-# add user options
+# add_regions only for changed regions
 
 # Constants
 PACKAGES_PATH = sublime.packages_path()
 SUBLIME_PATH = dirname(PACKAGES_PATH)
+
+
+class user_settings(object):
+    """Global object represents user settings
+    """
+
+    _settings_file = 'CSS-colors.sublime-settings'
+    _settings = sublime.load_settings(_settings_file)
+
+    class __metaclass__(type):
+        def __new__(typ, *args, **kwargs):
+            """Set inisial settings"""
+
+            obj = type.__new__(typ, *args, **kwargs)
+            obj._init_if_not_exists()
+            return obj
+
+        @property
+        def dynamic_highlight(cls):
+            # cls._init_if_not_exists()
+            s = cls._settings.get('dynamic_highlight')
+            return s
+
+        def save(cls):
+            sublime.save_settings(cls._settings_file)
+
+        def _init_if_not_exists(cls):
+            if cls.dynamic_highlight == None:
+                cls._settings.set('dynamic_highlight', True)
+                cls.save()
 
 
 class Color(object):
@@ -256,7 +285,7 @@ def colorize_css(view, erase_state):
     colors = get_colors(view, color_regions)
     file_id = view.file_name() or str(view.buffer_id())
     state = State(colors, color_regions, file_id)
-    if erase_state == 'True':
+    if erase_state:
         state.erase()
     if not colors or theme.is_colorized and not state.need_redraw:
         state.save()
@@ -303,14 +332,18 @@ class CssUncolorizeCommand(sublime_plugin.TextCommand):
         rm(theme.abspash + '.cache')
         theme.set(theme.uncolorized_path)
 
-
+# TODO: activate on change
 class CssColorizeEventer(sublime_plugin.EventListener):
     def on_load(self, view):
+        if not user_settings.dynamic_highlight:
+            return
         self.view = view
         if self.file_is_css:
             colorize_css(view, True)
 
     def on_modified(self, view):
+        if not user_settings.dynamic_highlight:
+            return
         self.view = view
         if self.file_is_css:
             colorize_css(view, False)
