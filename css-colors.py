@@ -367,5 +367,7 @@ class ToggleAutoCssColorize(sublime_plugin.WindowCommand):
     def run(self):
         if user_settings.dynamic_highlight:
             user_settings.dynamic_highlight = False
+            self.window.run_command('css_uncolorize')
         else:
             user_settings.dynamic_highlight = True
+            self.window.run_command('css_colorize', {'erase_state': True})
