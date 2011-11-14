@@ -355,9 +355,10 @@ class CssColorizeCommand(sublime_plugin.TextCommand):
 class CssUncolorizeCommand(sublime_plugin.TextCommand):
     def run(self, edit):
         clear_css_regions(self.view)
-        rm(theme.abspash)
-        rm(theme.abspash + '.cache')
-        theme.set(theme.uncolorized_path)
+        if theme.is_colorized:
+            rm(theme.abspash)
+            rm(theme.abspash + '.cache')
+            theme.set(theme.uncolorized_path)
 
 
 # TODO: activate on change
