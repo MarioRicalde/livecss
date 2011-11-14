@@ -1,6 +1,7 @@
 # stdlib
+from glob import glob
 from os import remove as rm
-from os.path import join, basename, dirname, normpath, relpath
+from os.path import join, basename, dirname, normpath, relpath, exists
 from plistlib import readPlist as read_plist
 from plistlib import writePlist as write_plist
 from random import randint
@@ -333,6 +334,17 @@ def colorize_if_not(view):
         colorize_css(view, True)
 
 
+def clean_themes_folder():
+    theme_folder = theme.dirname
+    current_theme = theme.name
+    themes = glob(theme_folder + '/*')
+    colored_themes = [t for t in themes if basename(t).startswith('Colorized-')]
+    themes_except_current = [t for t in colored_themes if basename(t) != current_theme]
+    for color_theme in themes_except_current:
+        if exists(color_theme):
+            rm(color_theme)
+
+
 class CssColorizeCommand(sublime_plugin.TextCommand):
     def run(self, edit, erase_state=False):
         colorize_css(self.view, erase_state)
@@ -354,6 +366,7 @@ class CssColorizeEventer(sublime_plugin.EventListener):
             return
         self.view = view
         theme.on_select_new_theme(lambda: colorize_if_not(view))
+        clean_themes_folder()
         if self.file_is_css:
             colorize_css(view, True)
 
