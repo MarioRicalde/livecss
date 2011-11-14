@@ -139,17 +139,13 @@ class State(object):
     Uses hash of all colors in file to save state
     """
 
-    def __init__(self, colors, regions, file_id):
+    def __init__(self, colors, file_id):
         self._settings = sublime.load_settings('Colorized.sublime-settings')
         self.colors = colors
-        self.regions = regions
         self.file_id = file_id
 
     def save(self):
-        state = {self.file_id: {'colors': [str(x) for x in self.colors],
-                                'regions': [str(x) for x in self.regions]
-                                }
-                            }
+        state = {self.file_id: {'colors': [str(x) for x in self.colors]}}
         self._settings.set('state', state)
 
     @property
@@ -160,13 +156,13 @@ class State(object):
 
     @property
     def saved_state(self):
-        """Returns saved colors and regions if any
+        """Returns saved colors if any
         or empty state
         """
 
         s = self._settings.get('state')
         if not s or not s.get(self.file_id):
-            return {'colors': '[]'}
+            return {'colors': []}
         return s[self.file_id]
 
     def erase(self):
@@ -300,7 +296,7 @@ def colorize_css(view, erase_state):
     color_regions = get_color_regions(view)
     colors = get_colors(view, color_regions)
     file_id = view.file_name() or str(view.buffer_id())
-    state = State(colors, color_regions, file_id)
+    state = State(colors, file_id)
     if erase_state:
         state.erase()
     if not colors:
