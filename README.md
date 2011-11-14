@@ -14,6 +14,3 @@ The foreground color is selected oppositely.
 it colorizes regions by creating theme file.
 2. Still in alpha, so may be full of bugs.
 3. It assumes all theme are in `Packages/Color Scheme - Default folder` folder
-
-#Known bugs:
-1. Wrong colorization on changing theme
