@@ -124,7 +124,7 @@ class Color(object):
 
         if len(rgb) == 4:
             #rgba
-            rgb = rgb[1:]
+            rgb = rgb[0:3]
 
         return '#%02x%02x%02x' % tuple(int(x) for x in rgb)
 
