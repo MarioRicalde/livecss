@@ -183,7 +183,7 @@ class Colors:
         return str(self.dict)
 
     def __getitem__(self, item):
-        return self.dict[item.title()]
+        return self.dict[item.lower()]
 
 
 named_colors = Colors(html4_names_to_hex, css3_names_to_hex)
