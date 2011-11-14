@@ -298,6 +298,7 @@ def colorize_regions(view, regions, colors):
     for r, c  in regions_colors:
         name = "css_color_%d" % count
         view.add_regions(name, [r], c.hex)
+        count += 1
 
 
 def colorize_css(view, erase_state):
