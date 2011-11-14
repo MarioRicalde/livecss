@@ -176,7 +176,7 @@ class Colors:
                 self.dict.update(d)
 
     def __contains__(self, item):
-        if str(item.lowercase()) in self.dict:
+        if str(item.lower()) in self.dict:
             return True
 
     def __repr__(self):
