@@ -228,6 +228,9 @@ class theme(object):
             r = str(randint(1, 10 ** 15)) + '-'
             return cls._prefix + r + cls.uncolorized_name
 
+        def on_select_new_theme(cls, callback):
+            cls._settings.add_on_change('color_scheme', callback)
+
 
 def template(color):
     """Template dict to use in color theme plist generating"""
@@ -325,6 +328,11 @@ def erase_colorized_regions(view, regions):
         view.erase_regions(str(region))
 
 
+def colorize_if_not(view):
+    if not theme.is_colorized:
+        colorize_css(view, True)
+
+
 class CssColorizeCommand(sublime_plugin.TextCommand):
     def run(self, edit, erase_state=False):
         colorize_css(self.view, erase_state)
@@ -345,6 +353,7 @@ class CssColorizeEventer(sublime_plugin.EventListener):
         if not user_settings.dynamic_highlight:
             return
         self.view = view
+        theme.on_select_new_theme(lambda: colorize_if_not(view))
         if self.file_is_css:
             colorize_css(view, True)
 
