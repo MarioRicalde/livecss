@@ -304,11 +304,9 @@ def colorize_css(view, erase_state):
     if erase_state:
         state.erase()
     if not colors:
-        state.save()
         return
     colorize_regions(view, color_regions, colors)
     if state.need_generate_new_color_file:
-
         generate_color_theme(colors)
         state.save()
     state.save()
