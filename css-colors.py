@@ -6,18 +6,12 @@ from plistlib import writePlist as write_plist
 from random import randint
 import re
 
-import time
-
 # sublime
 import sublime
 import sublime_plugin
 
 # local improrts
 from colors import named_colors
-
-def log(m):
-    t = str(time.time())
-    print "[%s] %s" % (t, m)
 
 # fix bug whet typing rgb color
 # add_regions only for changed regions
@@ -164,7 +158,7 @@ class State(object):
 
         saved_colors = self.saved_state['colors']
         if len(saved_colors) < len(self.colors):
-            log('Need redraw')
+
             return True
 
     @property
@@ -319,13 +313,13 @@ def colorize_css(view, erase_state):
     if erase_state:
         state.erase()
     if not colors or theme.is_colorized and not state.need_redraw:
-        log("State is clean")
+
         state.save()
         return
-    log("State is dirty")
+
     colorize_regions(view, color_regions, colors)
     if state.need_generate_new_color_file:
-        log("Regenerating theme")
+
         generate_color_theme(colors)
         state.save()
     state.save()
