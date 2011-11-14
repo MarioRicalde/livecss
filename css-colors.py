@@ -109,10 +109,10 @@ class Color(object):
         return self.hex
 
     def __eq__(self, other):
-        return self.color == other
+        return self.hex == other
 
     def __hash__(self):
-        return hash(self.color)
+        return hash(self.hex)
 
     def _rgb_to_hex(self, rgb):
         if str(rgb[0])[-1] == '%':
