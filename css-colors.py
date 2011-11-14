@@ -20,6 +20,17 @@ PACKAGES_PATH = sublime.packages_path()
 SUBLIME_PATH = dirname(PACKAGES_PATH)
 
 
+def clear_css_regions(view):
+    count = 0
+    while count != -1:
+        name = "css_color_%d" % count
+        if len(view.get_regions(name)) != 0:
+            view.erase_regions(name)
+            count += 1
+        else:
+            count = -1
+
+
 class user_settings(object):
     """Global object represents user settings
     """
@@ -73,7 +84,7 @@ class Color(object):
         else:
             if len(color) == 4:  # FIXME
                 # 3 sign hex
-                color = "#{0[1]}0{0[2]}0{0[3]}0".format(color)
+                color = "#{0[1]}{0[1]}{0[2]}{0[2]}{0[3]}{0[3]}".format(color)
             hex_color = color
 
         return hex_color
@@ -85,7 +96,7 @@ class Color(object):
     @property
     def opposite(self):
         r, g, b = self._hex_to_rgb(self.undash)
-        brightness = (r + r + b + g + g + g) / 6
+        brightness = (r + r + b + b + g + g) / 6
         if brightness > 130:
             return '#000000'
         else:
@@ -113,7 +124,7 @@ class Color(object):
 
         if len(rgb) == 4:
             #rgba
-            rgb = rgb[1:]
+            rgb = rgb[0:3]
 
         return '#%02x%02x%02x' % tuple(int(x) for x in rgb)
 
@@ -139,11 +150,10 @@ class State(object):
 
     @property
     def need_redraw(self):
-        """Indicates if colors wers deleted from buffer"""
+        """Indicates if colors were deleted from buffer"""
 
         saved_colors = self.saved_state['colors'][1:-1].split()
         if len(saved_colors) < len(self.colors):
-
             return True
 
     @property
@@ -172,6 +182,7 @@ class State(object):
 
 list_diff = lambda l1, l2: [x for x in l1 if x not in l2]
 escape = lambda s: "\'" + s + "\'"
+
 
 #TODO: add fallbacks on errors
 class theme(object):
@@ -237,13 +248,13 @@ def template(color):
     """Template dict to use in color theme plist generating"""
 
     el = {
-    'name': escape(color.color),
-    'scope': color.color,
-    'settings': {
-        'background': color.hex,
-        'foreground': color.opposite
-                }
+        'name': escape(color.hex),
+        'scope': color.hex,
+        'settings': {
+            'background': color.hex,
+            'foreground': color.opposite
         }
+    }
     return el
 
 
@@ -280,8 +291,14 @@ def colorize_regions(view, regions, colors):
     """
 
     regions_colors = zip(regions, colors)
+    # Clear all available colored regions
+    clear_css_regions(view)
+    # Color regions
+    count = 0
     for r, c  in regions_colors:
-        view.add_regions(str(r), [r], c.color)
+        name = "css_color_%d" % count
+        view.add_regions(name, [r], c.hex)
+        count += 1
 
 
 def colorize_css(view, erase_state):
@@ -321,7 +338,7 @@ def get_color_regions(view):
     return w3c + extra_web + hex_rgb + rbg_percent
 
 
-def erase_colized_regions(view, regions):
+def erase_colorized_regions(view, regions):
     for region in regions:
         view.erase_regions(str(region))
 
@@ -333,11 +350,11 @@ class CssColorizeCommand(sublime_plugin.TextCommand):
 
 class CssUncolorizeCommand(sublime_plugin.TextCommand):
     def run(self, edit):
-        colorized_regions = get_color_regions(self.view)
-        erase_colized_regions(self.view, colorized_regions)
+        clear_css_regions(self.view)
         rm(theme.abspash)
         rm(theme.abspash + '.cache')
         theme.set(theme.uncolorized_path)
+
 
 # TODO: activate on change
 class CssColorizeEventer(sublime_plugin.EventListener):
