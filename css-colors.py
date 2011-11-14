@@ -171,10 +171,6 @@ class State(object):
             self._settings.erase('state')
 
 
-list_diff = lambda l1, l2: [x for x in l1 if x not in l2]
-escape = lambda s: "\'" + s + "\'"
-
-
 #TODO: add fallbacks on errors
 class theme(object):
     """Global object represents ST color scheme """
@@ -247,6 +243,8 @@ def template(color):
         }
     }
     return el
+
+escape = lambda s: "\'" + s + "\'"
 
 
 def generate_color_theme(colors):
