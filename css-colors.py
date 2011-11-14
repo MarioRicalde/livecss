@@ -153,15 +153,6 @@ class State(object):
         self._settings.set('state', state)
 
     @property
-    def need_redraw(self):
-        """Indicates if colors were deleted from buffer"""
-
-        saved_colors = self.saved_state['colors']
-        if len(saved_colors) < len(self.colors):
-
-            return True
-
-    @property
     def need_generate_new_color_file(self):
         saved_colors = self.saved_state['colors']
         if set(self.colors) - set(saved_colors):
@@ -312,11 +303,9 @@ def colorize_css(view, erase_state):
     state = State(colors, color_regions, file_id)
     if erase_state:
         state.erase()
-    if not colors or theme.is_colorized and not state.need_redraw:
-
+    if not colors:
         state.save()
         return
-
     colorize_regions(view, color_regions, colors)
     if state.need_generate_new_color_file:
 
