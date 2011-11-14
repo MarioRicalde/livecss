@@ -13,8 +13,6 @@ import sublime_plugin
 # local improrts
 from colors import named_colors
 
-# fix bug whet typing rgb color
-# add_regions only for changed regions
 
 # Constants
 PACKAGES_PATH = sublime.packages_path()
@@ -83,7 +81,7 @@ class Color(object):
             color = color.split(',')
             hex_color = self._rgb_to_hex(tuple(color))
         else:
-            if len(color) == 4:  # FIXME
+            if len(color) == 4:
                 # 3 sign hex
                 color = "#{0[1]}{0[1]}{0[2]}{0[2]}{0[3]}{0[3]}".format(color)
             hex_color = color
