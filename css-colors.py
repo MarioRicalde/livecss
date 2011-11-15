@@ -350,9 +350,8 @@ class CssUncolorizeCommand(sublime_plugin.TextCommand):
     def run(self, edit):
         clear_css_regions(self.view)
         if theme.is_colorized:
-            rm(theme.abspash)
-            rm(theme.abspash + '.cache')
             theme.set(theme.uncolorized_path)
+            clean_themes_folder()
 
 
 # TODO: activate on change
@@ -361,8 +360,8 @@ class CssColorizeEventer(sublime_plugin.EventListener):
         if not user_settings.dynamic_highlight:
             return
         self.view = view
-        theme.on_select_new_theme(lambda: colorize_if_not(view))
         clean_themes_folder()
+        theme.on_select_new_theme(lambda: colorize_if_not(view))
         if self.file_is_css:
             colorize_css(view, True)
 
