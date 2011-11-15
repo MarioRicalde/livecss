@@ -267,6 +267,10 @@ def generate_color_theme(colors):
     write_plist(theme_plist, colorized_theme_path)
 
     theme.set(colorized_theme_path)
+    
+    if basename(theme_path).startswith('Colorized-'):
+        rm(theme_path)
+        rm(theme_path + '.cache')
 
 
 def colorize_regions(view, regions, colors):
