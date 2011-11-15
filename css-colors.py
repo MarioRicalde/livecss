@@ -266,10 +266,6 @@ def generate_color_theme(colors):
         theme_plist['settings'].append(el)
     write_plist(theme_plist, colorized_theme_path)
 
-    if theme.is_colorized:
-        rm(theme.abspash)
-        rm(theme.abspash + '.cache')
-
     theme.set(colorized_theme_path)
 
 
