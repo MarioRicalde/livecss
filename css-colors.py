@@ -267,7 +267,7 @@ def generate_color_theme(colors):
     write_plist(theme_plist, colorized_theme_path)
 
     theme.set(colorized_theme_path)
-    
+
     if basename(theme_path).startswith('Colorized-'):
         rm(theme_path)
         rm(theme_path + '.cache')
@@ -322,11 +322,6 @@ def get_color_regions(view):
     hex_rgb = view.find_by_selector("constant.other.color.rgb-value.css")
     rbg_percent = view.find_by_selector("constant.other.color.rgb-percentage.css")
     return w3c + extra_web + hex_rgb + rbg_percent
-
-
-def erase_colorized_regions(view, regions):
-    for region in regions:
-        view.erase_regions(str(region))
 
 
 def colorize_if_not(view):
