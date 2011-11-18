@@ -11,9 +11,8 @@ import re
 import sublime
 import sublime_plugin
 
-# local improrts
+# local imports
 from colors import named_colors
-
 
 # Constants
 PACKAGES_PATH = sublime.packages_path()
@@ -39,17 +38,11 @@ class user_settings(object):
     _settings = sublime.load_settings(_settings_file)
 
     class __metaclass__(type):
-        def __new__(typ, *args, **kwargs):
-            """Set inisial settings"""
-
-            obj = type.__new__(typ, *args, **kwargs)
-            obj._init_if_not_exists()
-            return obj
 
         @property
         def dynamic_highlight(cls):
-            # cls._init_if_not_exists()
-            s = cls._settings.get('dynamic_highlight')
+            # default to True
+            s = cls._settings.get('dynamic_highlight', True)
             return s
 
         @dynamic_highlight.setter
@@ -59,11 +52,6 @@ class user_settings(object):
 
         def save(cls):
             sublime.save_settings(cls._settings_file)
-
-        def _init_if_not_exists(cls):
-            if cls.dynamic_highlight == None:
-                cls._settings.set('dynamic_highlight', True)
-                cls.save()
 
 
 class Color(object):
@@ -308,7 +296,7 @@ def colorize_css(view, erase_state):
 
 
 def get_colors(view, color_regions):
-    """Turnes regions into [Color]"""
+    """Turns regions into [Color]"""
     colors = [Color(view.substr(color)) for color in color_regions]
     return colors
 
@@ -353,13 +341,15 @@ class CssUncolorizeCommand(sublime_plugin.TextCommand):
             clean_themes_folder()
 
 
-# TODO: activate on change
 class CssColorizeEventer(sublime_plugin.EventListener):
+    def __init__(self):
+        # on plugin load
+        clean_themes_folder()
+
     def on_load(self, view):
         if not user_settings.dynamic_highlight:
             return
         self.view = view
-        clean_themes_folder()
         theme.on_select_new_theme(lambda: colorize_if_not(view))
         if self.file_is_css:
             colorize_css(view, True)
