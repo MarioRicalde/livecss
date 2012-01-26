@@ -13,6 +13,8 @@ from theme import *
 from state import State
 from settings import Settings
 from color import Color
+from utils import generate_menu
+from debug import *
 
 
 user_settings = Settings('CSS-colors.sublime-settings')
@@ -57,17 +59,25 @@ def generate_color_theme(colors):
     theme_plist = read_plist(theme_path)
     colorized_theme_path = colorized_path(theme)
 
+    log("Theme path", theme_path)
+    log("Colorized theme path", colorized_theme_path)
+
     new_colors = (template(color) for color in set(colors))
     for el in new_colors:
         theme_plist['settings'].append(el)
+    log("Writing theme " + colorized_theme_path)
     write_plist(theme_plist, colorized_theme_path)
 
     if is_colorized(theme):
+        log("Theme was colorized, removing old")
+        log("rm ", theme_path)
         # check may be wrong
-        theme.set(colorized_theme_path)
         rm(theme_path)
         # check if exists
         rm(theme_path + '.cache')
+
+    log("Setting new theme")
+    theme.set(colorized_theme_path)
 
 
 def colorize_regions(view, regions, colors):
@@ -90,18 +100,23 @@ def colorize_regions(view, regions, colors):
 
 
 def colorize_css(view, erase_state):
+    log("Colorizing css")
     color_regions = get_color_regions(view)
     colors = get_colors(view, color_regions)
     file_id = view.file_name() or str(view.buffer_id())
     state = State(colors, file_id)
     if erase_state:
+        log("Erasing state")
         state.erase()
     if not colors:
+        log("No colors")
         return
+    log("Colorizing regions")
     colorize_regions(view, color_regions, colors)
     if state.need_generate_new_color_file:
-        print "Generating theme"
+        log("Generating theme")
         generate_color_theme(colors)
+    log("Saving")
     state.save()
 
 
@@ -147,7 +162,7 @@ class CssUncolorizeCommand(sublime_plugin.TextCommand):
     def run(self, edit):
         clear_css_regions(self.view)
         if is_colorized(theme):
-            theme.set(uncolorized_path(uncolorized_path))
+            theme.set(uncolorized_path(theme))
             clean_themes_folder()
 
 
@@ -157,6 +172,8 @@ class CssColorizeEventer(sublime_plugin.EventListener):
         clean_themes_folder()
 
     def on_load(self, view):
+        # clean, set theme to uncolorized if necessary
+        generate_menu()
         if not user_settings.dynamic_highlight:
             return
         self.view = view
@@ -182,8 +199,8 @@ class CssColorizeEventer(sublime_plugin.EventListener):
 class ToggleAutoCssColorize(sublime_plugin.WindowCommand):
     def run(self):
         if user_settings.dynamic_highlight:
-            user_settings.dynamic_highlight = False
             self.window.run_command('css_uncolorize')
         else:
-            user_settings.dynamic_highlight = True
             self.window.run_command('css_colorize', {'erase_state': True})
+        user_settings.dynamic_highlight = not user_settings.dynamic_highlight
+        generate_menu()
