@@ -13,7 +13,7 @@ from theme import *
 from state import State
 from settings import Settings
 from color import Color
-from utils import generate_menu
+from utils import generate_menu, rm_menu
 from debug import *
 
 
@@ -188,10 +188,23 @@ class CssColorizeEventer(sublime_plugin.EventListener):
         if self.file_is_css:
             colorize_css(view, False)
 
+    def on_activated(self, view):
+        self.view = view
+        if self.file_is_css:
+            generate_menu()
+            log("Menu was created")
+
+    def on_deactivated(self, view):
+        self.view = view
+        if self.file_is_css:
+            rm_menu()
+            log("Menu was deleted")
+
     @property
     def file_is_css(self):
         any_point = self.view.sel()[0].begin()
         file_scope = self.view.scope_name(any_point).split()[0]
+        log("File scope: ", file_scope)
         if file_scope == 'source.css':
             return True
 

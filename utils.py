@@ -1,10 +1,11 @@
 from os.path import join as joinpath
-from os.path import abspath
-from os import curdir
+from os.path import abspath, exists
+from os import curdir, remove
 
 from settings import Settings
 
 PLUGIN_PATH = abspath(curdir)
+MENU_FILE = joinpath(PLUGIN_PATH, "Main.sublime-menu")
 
 
 def on_off(b):
@@ -31,7 +32,7 @@ def menu(state):
 
 
 def write_menu(text):
-    with open(joinpath(PLUGIN_PATH, "Main.sublime-menu"), 'w') as m:
+    with open(MENU_FILE, 'w') as m:
         m.write(text)
 
 
@@ -42,3 +43,6 @@ def generate_menu():
     write_menu(menu_content)
 
 
+def rm_menu():
+    if exists(MENU_FILE):
+        remove(MENU_FILE)
