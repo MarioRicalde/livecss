@@ -1,0 +1,110 @@
+!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
+!_TAG_FILE_SORTED	1	/0=unsorted, 1=sorted, 2=foldcase/
+!_TAG_PROGRAM_AUTHOR	Darren Hiebert	/dhiebert@users.sourceforge.net/
+!_TAG_PROGRAM_NAME	Exuberant Ctags	//
+!_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
+!_TAG_PROGRAM_VERSION	5.8	//
+Color	color.py	/^class Color(object):$/;"	c
+Color	css-colors.py	/^from color import Color$/;"	i
+Colors	colors.py	/^class Colors:$/;"	c
+Colors	named_colors.py	/^class Colors:$/;"	c
+CssColorizeCommand	css-colors.py	/^class CssColorizeCommand(sublime_plugin.TextCommand):$/;"	c
+CssColorizeEventer	css-colors.py	/^class CssColorizeEventer(sublime_plugin.EventListener):$/;"	c
+CssUncolorizeCommand	css-colors.py	/^class CssUncolorizeCommand(sublime_plugin.TextCommand):$/;"	c
+PACKAGES_PATH	theme.py	/^PACKAGES_PATH = sublime.packages_path()$/;"	v
+SUBLIME_PATH	theme.py	/^SUBLIME_PATH = dirname(PACKAGES_PATH)$/;"	v
+Settings	css-colors.py	/^from settings import Settings$/;"	i
+Settings	settings.py	/^class Settings(object):$/;"	c
+Settings	state.py	/^from settings import Settings$/;"	i
+State	css-colors.py	/^from state import State$/;"	i
+State	state.py	/^class State(object):$/;"	c
+ToggleAutoCssColorize	css-colors.py	/^class ToggleAutoCssColorize(sublime_plugin.WindowCommand):$/;"	c
+__contains__	colors.py	/^    def __contains__(self, item):$/;"	m	class:Colors	file:
+__contains__	named_colors.py	/^    def __contains__(self, item):$/;"	m	class:Colors	file:
+__eq__	color.py	/^    def __eq__(self, other):$/;"	m	class:Color	file:
+__getattribute__	settings.py	/^    def __getattribute__(self, attr):$/;"	m	class:Settings	file:
+__getitem__	colors.py	/^    def __getitem__(self, item):$/;"	m	class:Colors	file:
+__getitem__	named_colors.py	/^    def __getitem__(self, item):$/;"	m	class:Colors	file:
+__hash__	color.py	/^    def __hash__(self):$/;"	m	class:Color	file:
+__init__	color.py	/^    def __init__(self, color):$/;"	m	class:Color
+__init__	colors.py	/^    def __init__(self, *args):$/;"	m	class:Colors
+__init__	css-colors.py	/^    def __init__(self):$/;"	m	class:CssColorizeEventer
+__init__	named_colors.py	/^    def __init__(self, *args):$/;"	m	class:Colors
+__init__	settings.py	/^    def __init__(self, settings_file, in_memory=False):$/;"	m	class:Settings
+__init__	state.py	/^    def __init__(self, colors, file_id):$/;"	m	class:State
+__metaclass__	theme.py	/^    class __metaclass__(type):$/;"	c	class:theme
+__repr__	color.py	/^    def __repr__(self):$/;"	m	class:Color	file:
+__repr__	colors.py	/^    def __repr__(self):$/;"	m	class:Colors	file:
+__repr__	named_colors.py	/^    def __repr__(self):$/;"	m	class:Colors	file:
+__setattr__	settings.py	/^    def __setattr__(self, attr, value):$/;"	m	class:Settings	file:
+__str__	color.py	/^    def __str__(self):$/;"	m	class:Color	file:
+_hex_to_rgb	color.py	/^    def _hex_to_rgb(self, hex):$/;"	m	class:Color
+_rgb_to_hex	color.py	/^    def _rgb_to_hex(self, rgb):$/;"	m	class:Color
+_save	settings.py	/^    def _save(self):$/;"	m	class:Settings
+_settings	theme.py	/^    _settings = sublime.load_settings('Base File.sublime-settings')$/;"	v	class:theme
+abspash	theme.py	/^        def abspash(cls):$/;"	m	class:theme.__metaclass__
+basename	css-colors.py	/^from os.path import basename, exists$/;"	i
+basename	theme.py	/^from os.path import join, basename, dirname, normpath, relpath$/;"	i
+clean_themes_folder	css-colors.py	/^def clean_themes_folder():$/;"	f
+clear_css_regions	css-colors.py	/^def clear_css_regions(view):$/;"	f
+colorize_css	css-colors.py	/^def colorize_css(view, erase_state):$/;"	f
+colorize_if_not	css-colors.py	/^def colorize_if_not(view):$/;"	f
+colorize_regions	css-colors.py	/^def colorize_regions(view, regions, colors):$/;"	f
+colorized_name	theme.py	/^def colorized_name(theme):$/;"	f
+colorized_path	theme.py	/^def colorized_path(theme):$/;"	f
+concat_dicts	colors.py	/^    def concat_dicts(self):$/;"	m	class:Colors
+concat_dicts	named_colors.py	/^    def concat_dicts(self):$/;"	m	class:Colors
+css3_names_to_hex	colors.py	/^css3_names_to_hex = {'aliceblue': '#f0f8ff',$/;"	v
+css3_names_to_hex	named_colors.py	/^css3_names_to_hex = {'aliceblue': '#f0f8ff',$/;"	v
+dirname	theme.py	/^        def dirname(cls):$/;"	m	class:theme.__metaclass__
+dirname	theme.py	/^from os.path import join, basename, dirname, normpath, relpath$/;"	i
+erase	state.py	/^    def erase(self):$/;"	m	class:State
+escape	css-colors.py	/^escape = lambda s: "\\'" + s + "\\'"$/;"	v
+exists	css-colors.py	/^from os.path import basename, exists$/;"	i
+file_is_css	css-colors.py	/^    def file_is_css(self):$/;"	m	class:CssColorizeEventer
+generate_color_theme	css-colors.py	/^def generate_color_theme(colors):$/;"	f
+get_color_regions	css-colors.py	/^def get_color_regions(view):$/;"	f
+get_colors	css-colors.py	/^def get_colors(view, color_regions):$/;"	f
+glob	css-colors.py	/^from glob import glob$/;"	i
+hex	color.py	/^    def hex(self):$/;"	m	class:Color
+html4_names_to_hex	colors.py	/^html4_names_to_hex = {'aqua': '#00ffff',$/;"	v
+html4_names_to_hex	named_colors.py	/^html4_names_to_hex = {'aqua': '#00ffff',$/;"	v
+in_memory_settings	state.py	/^in_memory_settings = Settings('Colorized.sublime-settings')$/;"	v
+is_colorized	theme.py	/^def is_colorized(theme):$/;"	f
+join	theme.py	/^from os.path import join, basename, dirname, normpath, relpath$/;"	i
+log	debug.py	/^def log(m):$/;"	f
+name	theme.py	/^        def name(cls):$/;"	m	class:theme.__metaclass__
+named_colors	color.py	/^from named_colors import named_colors$/;"	i
+named_colors	colors.py	/^named_colors = Colors(html4_names_to_hex, css3_names_to_hex)$/;"	v
+named_colors	named_colors.py	/^named_colors = Colors(html4_names_to_hex, css3_names_to_hex)$/;"	v
+need_generate_new_color_file	state.py	/^    def need_generate_new_color_file(self):$/;"	m	class:State
+normpath	theme.py	/^from os.path import join, basename, dirname, normpath, relpath$/;"	i
+on_load	css-colors.py	/^    def on_load(self, view):$/;"	m	class:CssColorizeEventer
+on_modified	css-colors.py	/^    def on_modified(self, view):$/;"	m	class:CssColorizeEventer
+on_select_new_theme	theme.py	/^        def on_select_new_theme(cls, callback):$/;"	m	class:theme.__metaclass__
+opposite	color.py	/^    def opposite(self):$/;"	m	class:Color
+prefix	theme.py	/^    prefix = 'Colorized-'$/;"	v	class:theme
+randint	theme.py	/^from random import randint$/;"	i
+re	theme.py	/^import re$/;"	i
+read_plist	css-colors.py	/^from plistlib import readPlist as read_plist$/;"	i
+relpath	theme.py	/^        def relpath(cls):$/;"	m	class:theme.__metaclass__
+relpath	theme.py	/^from os.path import join, basename, dirname, normpath, relpath$/;"	i
+rm	css-colors.py	/^from os import remove as rm$/;"	i
+run	css-colors.py	/^    def run(self):$/;"	m	class:ToggleAutoCssColorize
+run	css-colors.py	/^    def run(self, edit):$/;"	m	class:CssUncolorizeCommand
+run	css-colors.py	/^    def run(self, edit, erase_state=False):$/;"	m	class:CssColorizeCommand
+save	state.py	/^    def save(self):$/;"	m	class:State
+saved_state	state.py	/^    def saved_state(self):$/;"	m	class:State
+set	theme.py	/^        def set(cls, theme):$/;"	m	class:theme.__metaclass__
+sublime	settings.py	/^import sublime$/;"	i
+sublime	state.py	/^import sublime$/;"	i
+sublime	theme.py	/^import sublime$/;"	i
+sublime_plugin	css-colors.py	/^import sublime_plugin$/;"	i
+template	css-colors.py	/^def template(color):$/;"	f
+theme	theme.py	/^class theme(object):$/;"	c
+time	debug.py	/^import time$/;"	i
+uncolorized_name	theme.py	/^def uncolorized_name(theme):$/;"	f
+uncolorized_path	theme.py	/^def uncolorized_path(theme):$/;"	f
+undash	color.py	/^    def undash(self):$/;"	m	class:Color
+user_settings	css-colors.py	/^user_settings = Settings('CSS-colors.sublime-settings')$/;"	v
+write_plist	css-colors.py	/^from plistlib import writePlist as write_plist$/;"	i

@@ -1,0 +1,1638 @@
+{
+	"auto_complete":
+	{
+		"selected_items":
+		[
+			[
+				"com",
+				"completer"
+			],
+			[
+				"ti",
+				"title"
+			],
+			[
+				"fol",
+				"folder"
+			],
+			[
+				"desc",
+				"description"
+			],
+			[
+				"tit",
+				"titleMatch"
+			],
+			[
+				"folder",
+				"folder"
+			],
+			[
+				"con",
+				"context"
+			],
+			[
+				"mat",
+				"match"
+			],
+			[
+				"res",
+				"resourse"
+			],
+			[
+				"pro",
+				"prototype"
+			],
+			[
+				"bac",
+				"background	background-color: transparent"
+			],
+			[
+				"folde",
+				"foldercache"
+			],
+			[
+				"filte",
+				"filters"
+			],
+			[
+				"co",
+				"context"
+			],
+			[
+				"des",
+				"description"
+			],
+			[
+				"bo",
+				"bookmarks"
+			],
+			[
+				"fun",
+				"function"
+			],
+			[
+				"lin",
+				"linkedBrowser"
+			],
+			[
+				"I",
+				"Iterator"
+			],
+			[
+				"match",
+				"matchString"
+			],
+			[
+				"bma",
+				"bmarksincludetitle"
+			],
+			[
+				"bm",
+				"bmarksincludetitle"
+			],
+			[
+				"va",
+				"value"
+			],
+			[
+				"fil",
+				"filters"
+			],
+			[
+				"Item",
+				"itemId"
+			],
+			[
+				"book",
+				"bookmarks"
+			],
+			[
+				"conte",
+				"context"
+			],
+			[
+				"ar",
+				"arguments"
+			],
+			[
+				"boo",
+				"bookmark"
+			],
+			[
+				"paret",
+				"parents"
+			],
+			[
+				"paID",
+				"parentFolderID"
+			],
+			[
+				"fo",
+				"folders"
+			],
+			[
+				"se",
+				"services"
+			],
+			[
+				"par",
+				"parentId"
+			],
+			[
+				"flder",
+				"foldercache"
+			],
+			[
+				"folderca",
+				"foldercache"
+			],
+			[
+				"func",
+				"function"
+			],
+			[
+				"pare",
+				"parents"
+			],
+			[
+				"chi",
+				"children"
+			],
+			[
+				"pa",
+				"parents"
+			],
+			[
+				"fold",
+				"folders"
+			],
+			[
+				"Folder",
+				"FolderCache"
+			],
+			[
+				"bookm",
+				"bookmarks"
+			],
+			[
+				"bok",
+				"bookmarkcache"
+			],
+			[
+				"proto",
+				"prototype"
+			],
+			[
+				"le",
+				"length"
+			],
+			[
+				"list",
+				"listFolders"
+			],
+			[
+				"tr",
+				"traverse"
+			],
+			[
+				"ch",
+				"childCount"
+			],
+			[
+				"loadF",
+				"loadFolders"
+			],
+			[
+				"fs",
+				"folders"
+			],
+			[
+				"_lo",
+				"_loadFolder"
+			],
+			[
+				"selec",
+				"selected_lines"
+			],
+			[
+				"user",
+				"user_input"
+			],
+			[
+				"sele",
+				"selected_lines"
+			],
+			[
+				"draw_no",
+				"draw_normal"
+			],
+			[
+				"tru",
+				"true"
+			],
+			[
+				"draw_a",
+				"draw_active"
+			],
+			[
+				"s",
+				"self"
+			],
+			[
+				"th",
+				"threaded"
+			],
+			[
+				"meth",
+				"methods"
+			],
+			[
+				"dec",
+				"decorator"
+			],
+			[
+				"prope",
+				"property"
+			],
+			[
+				"decorat",
+				"decorator"
+			],
+			[
+				"attr",
+				"attr_name"
+			],
+			[
+				"att",
+				"attr_name"
+			],
+			[
+				"sett",
+				"setattr"
+			],
+			[
+				"t",
+				"threaded"
+			],
+			[
+				"re",
+				"return"
+			],
+			[
+				"sl",
+				"self"
+			],
+			[
+				"thr",
+				"threaded"
+			],
+			[
+				"retu",
+				"return"
+			],
+			[
+				"sel",
+				"self"
+			],
+			[
+				"dn",
+				"dname"
+			],
+			[
+				"qu",
+				"query"
+			],
+			[
+				"NS",
+				"NS"
+			],
+			[
+				"que",
+				"query"
+			],
+			[
+				"dom",
+				"domain"
+			],
+			[
+				"v",
+				"vendor"
+			],
+			[
+				"ven",
+				"vendor"
+			],
+			[
+				"im",
+				"import"
+			],
+			[
+				"who",
+				"who"
+			],
+			[
+				"Qu",
+				"Queue"
+			],
+			[
+				"w",
+				"worker"
+			],
+			[
+				"Thread",
+				"threading"
+			],
+			[
+				"Th",
+				"threading"
+			],
+			[
+				"app",
+				"append"
+			],
+			[
+				"ns",
+				"ns"
+			],
+			[
+				"prin",
+				"print"
+			],
+			[
+				"dnm",
+				"dname"
+			],
+			[
+				"wo",
+				"worker"
+			],
+			[
+				"rdt",
+				"rdtype"
+			],
+			[
+				"qname",
+				"qname"
+			],
+			[
+				"Wo",
+				"WorkerThread"
+			],
+			[
+				"wra",
+				"wraps"
+			],
+			[
+				"status",
+				"status"
+			],
+			[
+				"run",
+				"run_async"
+			],
+			[
+				"get",
+				"getattr"
+			],
+			[
+				"ca",
+				"callable"
+			],
+			[
+				"sta",
+				"startswith"
+			],
+			[
+				"wr",
+				"wraps"
+			],
+			[
+				"cache",
+				"cached_property"
+			],
+			[
+				"tim",
+				"timer"
+			],
+			[
+				"time",
+				"time  (module)"
+			],
+			[
+				"run_",
+				"run_async"
+			],
+			[
+				"use",
+				"uses_our_mx"
+			],
+			[
+				"fu",
+				"func"
+			],
+			[
+				"parents",
+				"parents"
+			],
+			[
+				"ret",
+				"return"
+			],
+			[
+				"para",
+				"param  (variable)"
+			],
+			[
+				"dac",
+				"dactyl"
+			],
+			[
+				"folderTit",
+				"folderTitle"
+			],
+			[
+				"getId",
+				"getIdByFullPath"
+			],
+			[
+				"un",
+				"unfiled"
+			],
+			[
+				"ser",
+				"services"
+			],
+			[
+				"echo",
+				"echomsg"
+			],
+			[
+				"ident",
+				"identity"
+			],
+			[
+				"getid",
+				"getIdByFullPath"
+			],
+			[
+				"spl",
+				"split"
+			],
+			[
+				"full",
+				"fullPath"
+			],
+			[
+				"fullPa",
+				"fullPath"
+			],
+			[
+				"bookmarkc",
+				"bookmarkcache"
+			],
+			[
+				"STR",
+				"STRING"
+			],
+			[
+				"St",
+				"String"
+			],
+			[
+				"toSt",
+				"toString"
+			],
+			[
+				"st",
+				"string"
+			],
+			[
+				"bmarks",
+				"bmarks"
+			],
+			[
+				"bmSe",
+				"bmService"
+			]
+		]
+	},
+	"buffers":
+	[
+	],
+	"build_system": "Packages/User/dactyl.sublime-build",
+	"command_palette":
+	{
+		"height": 344.0,
+		"selected_items":
+		[
+			[
+				"re",
+				"Package Control: Remove Package"
+			],
+			[
+				"remo",
+				"Package Control: Remove Package"
+			],
+			[
+				"diff",
+				"Set Syntax: Diff"
+			],
+			[
+				"js",
+				"Set Syntax: JavaScript"
+			],
+			[
+				"tab",
+				"tabularize"
+			],
+			[
+				"dif",
+				"Set Syntax: Diff"
+			],
+			[
+				"ta",
+				"tabularize"
+			],
+			[
+				"pare",
+				"Package Control: Remove Package"
+			],
+			[
+				"sur",
+				"surround_with_snippet"
+			],
+			[
+				"remove",
+				"Package Control: Remove Package"
+			],
+			[
+				"ja",
+				"Set Syntax: JavaScript"
+			],
+			[
+				"ins",
+				"Package Control: Install Package"
+			],
+			[
+				"in",
+				"Package Control: Install Package"
+			],
+			[
+				"install",
+				"Package Control: Install Package"
+			],
+			[
+				"insta",
+				"Package Control: Install Package"
+			],
+			[
+				"in	",
+				"Package Control: Install Package"
+			],
+			[
+				"packre",
+				"Package Control: Remove Package"
+			],
+			[
+				"pac",
+				"Package Control: Install Package"
+			],
+			[
+				"pack",
+				"Preferences: Browse Packages"
+			],
+			[
+				"Package ",
+				"Preferences: Package Control Settings – Default"
+			],
+			[
+				"bash",
+				"Set Syntax: Shell Script (Bash)"
+			],
+			[
+				"java",
+				"Set Syntax: JavaScript"
+			],
+			[
+				"git comm",
+				"Git: Quick Commit"
+			],
+			[
+				"gd",
+				"Git: Diff Current File"
+			],
+			[
+				"gitad",
+				"Git: Add Current File"
+			],
+			[
+				":w",
+				":w - Save"
+			],
+			[
+				"for",
+				"Format: Javascript"
+			],
+			[
+				"cuc",
+				"Set Syntax: Cucumber Steps"
+			],
+			[
+				"instal",
+				"Package Control: Install Package"
+			],
+			[
+				"save",
+				"Project: Save As"
+			],
+			[
+				"set syba",
+				"Set Syntax: Shell Script (Bash)"
+			],
+			[
+				"de",
+				"de consentrate"
+			],
+			[
+				"con",
+				"consentrate"
+			],
+			[
+				"sw",
+				"Switch language: en_US"
+			],
+			[
+				"gc",
+				"Git: Commit"
+			],
+			[
+				"ga",
+				"Git: Add Current File"
+			],
+			[
+				"s",
+				"select_theme"
+			],
+			[
+				"sele",
+				"select_theme"
+			],
+			[
+				"sel",
+				"select_theme"
+			],
+			[
+				"gqc",
+				"Git: Quick Commit"
+			],
+			[
+				"gce",
+				"Git: Checkout Current File"
+			],
+			[
+				"pacre",
+				"Package Control: Remove Package"
+			],
+			[
+				"gche",
+				"Git: Checkout Current File"
+			],
+			[
+				"c",
+				"consentrate"
+			],
+			[
+				"co",
+				"consentrate"
+			],
+			[
+				"cno",
+				"Package Control: Upgrade/Overwrite All Packages"
+			],
+			[
+				"tr",
+				"Trailing Spaces: Toggle Trailing Spaces"
+			],
+			[
+				"dec",
+				"de consentrate"
+			],
+			[
+				"css",
+				"css_uncolorize"
+			],
+			[
+				"cssun",
+				"css_uncolorize"
+			],
+			[
+				"g che",
+				"Git: Checkout Current File"
+			],
+			[
+				"gdi",
+				"Git: Diff Current File"
+			],
+			[
+				"git che",
+				"Git: Checkout Current File"
+			],
+			[
+				"test",
+				"test_hi"
+			],
+			[
+				"unc",
+				"css_uncolorize"
+			],
+			[
+				"gq",
+				"Git: Quick Commit"
+			],
+			[
+				"un",
+				"css_uncolorize"
+			],
+			[
+				"se",
+				"select_theme"
+			],
+			[
+				"de ",
+				"de consentrate"
+			],
+			[
+				"exta",
+				"SublimeLinter: Extract Annotations"
+			],
+			[
+				"extra",
+				"SublimeLinter: Extract Annotations"
+			],
+			[
+				"linter",
+				"SublimeLinter: Extract Annotations"
+			],
+			[
+				"gdif",
+				"Git: Diff Current File"
+			],
+			[
+				"gad",
+				"Git: Add..."
+			],
+			[
+				"inst",
+				"Package Control: Install Package"
+			],
+			[
+				"rem",
+				"Package Control: Remove Package"
+			],
+			[
+				"pacrem",
+				"Package Control: Remove Package"
+			],
+			[
+				"p",
+				"Package Control: Remove Package"
+			],
+			[
+				"pcon",
+				"Package Control: Remove Package"
+			],
+			[
+				"package",
+				"Preferences: Browse Packages"
+			],
+			[
+				"pain",
+				"Package Control: Install Package"
+			],
+			[
+				"tet",
+				"test_tabular"
+			],
+			[
+				"gb",
+				"Git: Blame"
+			],
+			[
+				"gcu",
+				"Git: Custom Command"
+			],
+			[
+				"gdc",
+				"Git: Diff Current File"
+			],
+			[
+				"print",
+				"Package Control: Install Package"
+			],
+			[
+				"tes",
+				"test_hi"
+			],
+			[
+				"cs",
+				"css_colorize"
+			],
+			[
+				"selec",
+				"Bracket Highlighter: Select Bracket Content"
+			],
+			[
+				"gco",
+				"Git: Commit"
+			],
+			[
+				"git add",
+				"Git: Add..."
+			],
+			[
+				"colo",
+				"css_colorize"
+			],
+			[
+				"selet",
+				"select_theme"
+			],
+			[
+				"select_theme",
+				"select_theme"
+			],
+			[
+				"gst",
+				"Git: Status"
+			],
+			[
+				"gcus",
+				"Git: Custom Command"
+			],
+			[
+				"pacle",
+				"Package Control: List Packages"
+			],
+			[
+				"genera",
+				"Package Control: Add Repository Channel"
+			],
+			[
+				"Package Control: ",
+				"Package Control: List Packages"
+			],
+			[
+				"pr",
+				"Package Control: Remove Package"
+			],
+			[
+				"unco",
+				"css_uncolorize"
+			],
+			[
+				"git:",
+				"Git: Graph Current File"
+			],
+			[
+				"te",
+				"test_hi"
+			],
+			[
+				"gchce",
+				"Git: Checkout Current File"
+			],
+			[
+				"gl",
+				"Git: Log Current File"
+			],
+			[
+				"gs",
+				"Git: Status"
+			],
+			[
+				"gic",
+				"Git: Custom Command"
+			],
+			[
+				"gbr",
+				"Git: Change Branch"
+			],
+			[
+				"gch",
+				"Git: Checkout Current File"
+			],
+			[
+				"swap",
+				"Bracket Highlighter: Swap Quotes"
+			],
+			[
+				"swapq",
+				"Bracket Highlighter: Swap Quotes"
+			],
+			[
+				"selectbr",
+				"Bracket Highlighter: Select Bracket Content"
+			],
+			[
+				"show",
+				"Bracket Highlighter: Show Left Bracket"
+			],
+			[
+				"hi",
+				"test_hi"
+			],
+			[
+				"color",
+				"Snippet: color: hex"
+			],
+			[
+				"go",
+				"Goto Documentation"
+			],
+			[
+				"toggle",
+				"Hex Viewer: Toggle Hex View"
+			],
+			[
+				"csc",
+				"css_colorize"
+			],
+			[
+				"doc",
+				"Goto Documentation"
+			],
+			[
+				"gtd",
+				"Goto Documentation"
+			],
+			[
+				"got",
+				"Goto Documentation"
+			],
+			[
+				"grap",
+				"Git: Graph Current File"
+			],
+			[
+				"pre",
+				"Package Control: Remove Package"
+			],
+			[
+				"pc",
+				"Package Control: Remove Package"
+			],
+			[
+				"rope",
+				"Rope: Show Documentation"
+			],
+			[
+				"goto",
+				"Rope: Go to Definition"
+			],
+			[
+				"at",
+				"Set Syntax: LaTeX"
+			],
+			[
+				"t",
+				"test_tabular"
+			],
+			[
+				"gitc",
+				"Git: Commit"
+			],
+			[
+				"gitd",
+				"Git: Diff Current File"
+			],
+			[
+				"giff",
+				"Git: Diff Current File"
+			],
+			[
+				"su",
+				"surround_with_snippet"
+			],
+			[
+				"alternative_autocomplete",
+				"alternative_autocomplete"
+			],
+			[
+				"u",
+				"Update Languages"
+			],
+			[
+				"surr",
+				"surround_with_snippet"
+			],
+			[
+				"ug",
+				"Update Languages"
+			],
+			[
+				":e ",
+				":$ - EOF"
+			],
+			[
+				"up",
+				"Update Languages"
+			]
+		],
+		"width": 588.0
+	},
+	"console":
+	{
+		"height": 270.0
+	},
+	"distraction_free":
+	{
+		"menu_visible": true,
+		"show_minimap": false,
+		"show_open_files": true,
+		"show_tabs": false,
+		"side_bar_visible": false,
+		"status_bar_visible": false
+	},
+	"file_history":
+	[
+		"/Users/ask/Library/Application Support/Sublime Text 2/Packages/word_highlighter/highlighter.py",
+		"/Users/ask/Library/Application Support/Sublime Text 2/Packages/BracketHighlighter/BracketHighlighter.py",
+		"/Users/ask/dactyl/common/locale/en-US/options.xml",
+		"/Users/ask/repos/dactyl/common/modules/io.jsm",
+		"/Users/ask/repos/dactyl/pentadactyl/NEWS",
+		"/Users/ask/repos/dactyl/design.md",
+		"/Users/ask/dac.patch",
+		"/tmp/subl stdin eNdBxa.txt",
+		"/tmp/subl stdin co7Eo8.txt",
+		"/Users/ask/repos/dactyl/common/locale/en-US/options.xml",
+		"/Users/ask/.pentadactylrc",
+		"/Users/ask/repos/dactyl/common/content/hints.js",
+		"/tmp/subl stdin oEAdWA.txt",
+		"/tmp/subl stdin qaQMo1.txt",
+		"/tmp/subl stdin DXprAL.txt",
+		"/tmp/subl stdin k5NW8s.txt",
+		"/tmp/subl stdin ppbUvP.txt",
+		"/tmp/subl stdin FYOHX9.txt",
+		"/Users/ask/repos/dactyl/common/content/bookmarks.js",
+		"/Users/ask/repos/dactyl/common/locale/en-US/marks.xml",
+		"/Users/ask/repos/dactyl/common/modules/main.jsm",
+		"/Users/ask/repos/dactyl/design",
+		"/tmp/subl stdin AzbD2I.txt",
+		"/tmp/subl stdin 9hBZNL.txt",
+		"/tmp/subl stdin g7Cd46.txt",
+		"/tmp/subl stdin oAZTki.txt",
+		"/Users/ask/repos/dactyl/common/modules/completion.jsm",
+		"/Users/ask/repos/dactyl/common/content/commandline.js",
+		"/Users/ask/repos/dactyl/common/skin/global-styles.css",
+		"/tmp/subl stdin VKiCi4.txt",
+		"/tmp/subl stdin XQPWF9.txt",
+		"/tmp/subl stdin Z4uKWR.txt",
+		"/tmp/subl stdin zVCluZ.txt",
+		"/Users/ask/repos/dactyl/common/modules/addons.jsm",
+		"/Users/ask/repos/dactyl/common/modules/javascript.jsm",
+		"/Users/ask/repos/dactyl/common/modules/options.jsm",
+		"/Users/ask/repos/dactyl/common/modules/bootstrap.jsm",
+		"/Users/ask/repos/dactyl/common/modules/base.jsm",
+		"/Users/ask/repos/dactyl/common/modules/downloads.jsm",
+		"/Users/ask/repos/dactyl/common/modules/util.jsm",
+		"/Users/ask/repos/dactyl/common/modules/buffer.jsm",
+		"/Users/ask/repos/dactyl/common/modules/bookmarkcache.jsm",
+		"/Users/ask/repos/dactyl/common/modules/finder.jsm",
+		"/Users/ask/repos/dactyl/common/modules/commands.jsm",
+		"/Users/ask/repos/dactyl/common/content/dactyl.js",
+		"/tmp/subl stdin BzruEp.txt",
+		"/tmp/subl stdin 2LVFJF.txt",
+		"/tmp/subl stdin FzdECi.txt",
+		"/tmp/subl stdin gyJY4z.txt",
+		"/Users/ask/repos/dactyl/common/locale/en-US/styling.xml",
+		"/Users/ask/repos/dactyl/common/content/tabs.js",
+		"/Users/ask/repos/dactyl/common/content/history.js",
+		"/Users/ask/repos/dactyl/common/content/about.xul",
+		"/Users/ask/repos/dactyl/common/locale/en-US/messages.properties",
+		"/tmp/subl stdin gZ1raO.txt",
+		"/tmp/subl stdin 5NuhjO.txt",
+		"/tmp/subl stdin JP8H2w.txt",
+		"/tmp/subl stdin 5IiKOl.txt",
+		"/tmp/subl stdin qNpkel.txt",
+		"/tmp/subl stdin aCBtSh.txt",
+		"/tmp/subl stdin OOZ1jB.txt",
+		"/tmp/subl stdin LOON51.txt",
+		"/tmp/subl stdin KmuHGl.txt",
+		"/Users/ask/bookmarkcache.jsm",
+		"/tmp/subl stdin s5CB1i.txt",
+		"/tmp/subl stdin cR7fQj.txt",
+		"/tmp/subl stdin 4SFggI.txt",
+		"/tmp/subl stdin DLeENN.txt",
+		"/tmp/subl stdin Hqs1mt.txt",
+		"/Users/ask/repos/dactyl/common/modules/template.jsm",
+		"/Users/ask/repos/dactyl/HACKING",
+		"/Users/ask/Library/Application Support/Sublime Text 2/Packages/volcanoes/Default (OSX).sublime-keymap",
+		"/Users/ask/Library/Application Support/Sublime Text 2/Packages/Default/Default (OSX).sublime-keymap",
+		"/Users/ask/Library/Application Support/Sublime Text 2/Packages/User/Default (OSX).sublime-keymap",
+		"/Users/ask/Library/Application Support/Sublime Text 2/Packages/User/JavaScript.sublime-settings",
+		"/Users/ask/repos/dactyl/common/modules/config.jsm",
+		"/Users/ask/repos/dactyl/common/modules/storage.jsm",
+		"/Users/ask/repos/dactyl/common/modules/services.jsm",
+		"/Users/ask/repos/dactyl/common/modules/foldercache.jsm",
+		"/Users/ask/Library/Application Support/Sublime Text 2/Packages/User/Global.sublime-settings",
+		"/Users/ask/Library/Application Support/Sublime Text 2/Packages/Default/Global.sublime-settings",
+		"/Users/ask/Library/Application Support/Sublime Text 2/Packages/User/Base File.sublime-settings",
+		"/Users/ask/Library/Application Support/Sublime Text 2/Packages/Default/Base File.sublime-settings",
+		"/tmp/subl stdin 49qimY.txt",
+		"/Users/ask/Library/Application Support/Sublime Text 2/Packages/Package Control/Package Control.sublime-settings",
+		"/Users/ask/Library/Application Support/Sublime Text 2/Packages/User/CoffeeScript.sublime-build",
+		"/Users/ask/Library/Application Support/Sublime Text 2/Packages/User/dactyl.sublime-build",
+		"/Users/ask/Library/Application Support/Sublime Text 2/Packages/volcanoes/README.txt",
+		"/Users/ask/repos/dactyl/common/modules/cache.jsm",
+		"/Users/ask/repos/dactyl/common/modules/protocol.jsm",
+		"/Users/ask/repos/dactyl/common/modules/messages.jsm",
+		"/Users/ask/.oh-my-zsh/themes/dieter.zsh-theme",
+		"/Users/ask/.oh-my-zsh/themes/ask.zsh-theme",
+		"/Users/ask/lib/mercurial/hg-paste/paste.py",
+		"/Users/ask/lib/utils/battary.py",
+		"/Users/ask/repos/testing/node/frameworks/matador/app/controllers/admin/AdminController.js",
+		"/Users/ask/repos/testing/node/frameworks/matador/app/controllers/HomeController.js",
+		"/Users/ask/Library/Application Support/Sublime Text 2/Packages/SublimeLinter/README.rst",
+		"/Users/ask/Library/Application Support/Sublime Text 2/Packages/SublimeLinter/Base File.sublime-settings",
+		"/Users/ask/Library/Application Support/Sublime Text 2/Packages/User/reStructuredText.sublime-settings",
+		"/private/tmp/dactyl/common/content/bookmarks.js",
+		"/tmp/changeset",
+		"/private/tmp/dactyl/common/modules/bookmarkcache.jsm",
+		"/private/tmp/bookmarks.js.diff",
+		"/private/tmp/bookmarkscache.js.diff",
+		"/Users/ask/repos/testing/node/index.js",
+		"/Users/ask/Library/Application Support/Sublime Text 2/Packages/Tabular/tabular.py",
+		"/Users/ask/repos/testing/node/requestHandlers.js",
+		"/Users/ask/repos/testing/node/router.js",
+		"/Users/ask/repos/testing/node/server.js",
+		"/Users/ask/android-rom/tweaks/my_init_tweak/system/etc/69loopy_smoothness_tweak",
+		"/Users/ask/Library/Application Support/Sublime Text 2/Packages/Tabular/tabular",
+		"/Users/ask/Downloads/whitedragon-1.4.0_dev-201101111800-macosx.zip Folder/install.rdf",
+		"/Users/ask/repos/sweb/domain_info/dinf.py",
+		"/private/tmp/tutorial/features/tutor.feature",
+		"/Users/ask/Library/Application Support/Sublime Text 2/Packages/User/JSON.sublime-settings",
+		"/private/tmp/tutorial/steps/tutor.py",
+		"/Users/ask/repos/sweb/domain_info/lib/decorators.py",
+		"/private/tmp/tutorial/tutor.feature",
+		"/Users/ask/.oh-my-zsh/plugins/virtualenv/virtualenv.plugin.zsh",
+		"/Users/ask/.oh-my-zsh/plugins/f/f.plugin.zsh",
+		"/Users/ask/.zshrc",
+		"/tmp/subl stdin MzPNjF.txt",
+		"/tmp/subl stdin MkoijE.txt",
+		"/Users/ask/repos/sweb/domain_info/test.py",
+		"/Users/ask/repos/sweb/domain_info/vendor/whois/__init__.py",
+		"/Users/ask/minfo.py",
+		"/tmp/test.py"
+	],
+	"find":
+	{
+		"height": 33.0
+	},
+	"find_in_files":
+	{
+		"height": 0.0,
+		"where_history":
+		[
+			"<open folders>",
+			"/Users/ask/repos/dactyl/common/modules",
+			"<open folders>",
+			"/Users/ask/Library/Application Support/Sublime Text 2/Packages/SurroundWithSnippet"
+		]
+	},
+	"find_state":
+	{
+		"case_sensitive": false,
+		"find_history":
+		[
+			"delay",
+			"highlight_word_outline_style",
+			"DRAW_OUTLINED",
+			"style",
+			"STYLE",
+			"sort",
+			"options",
+			"folder",
+			"folderic",
+			"test",
+			"reader",
+			"moz",
+			"reader",
+			"moz",
+			"jar",
+			"jarjs",
+			"jar",
+			"isJarURL",
+			"resource",
+			"moz",
+			"completion.file",
+			"folder",
+			"ico",
+			"completer",
+			"addSearchKeyword",
+			"foldercache",
+			"folderic",
+			"folder",
+			"bug",
+			"fix",
+			"format",
+			"titleMa",
+			"folderca",
+			"tabPressed",
+			"tab",
+			"tabPressed",
+			"tab",
+			"exactMa",
+			"exactMatch",
+			"matchString",
+			"exactMatch",
+			"matchString",
+			"matchString:",
+			"matchString",
+			"completion.bookmark",
+			"bookmark",
+			"completion.bookmark",
+			"exac",
+			"extra",
+			"completion.folder",
+			"\"url\", \"info\"",
+			"url, info",
+			"foldercache.i",
+			"items.p",
+			"diff",
+			"dump",
+			"file",
+			"newURI",
+			"getFile",
+			"chrome://",
+			"completion.file",
+			"resource",
+			"util.regexp",
+			"regexp:",
+			"regexp",
+			"resource",
+			"resourse",
+			"validator",
+			"Path",
+			"path, type",
+			"\"path\", \"type\"",
+			"exist",
+			"options.add",
+			"options",
+			"Module",
+			"module(",
+			"module",
+			"actions",
+			"compl",
+			"INIT",
+			"dump",
+			"options",
+			"INIT",
+			"modules",
+			"options",
+			"add:",
+			"add",
+			"options",
+			"options.add(",
+			"options",
+			"config",
+			"options",
+			"chrome",
+			"url",
+			"string",
+			"validator",
+			"isurl",
+			"vali",
+			"options.add",
+			"options",
+			"icon:",
+			"img",
+			"backgr",
+			"img",
+			"img-src",
+			"bookmark",
+			"span highlight",
+			"bmarks",
+			"url:",
+			"DEFAULT_FAVICON",
+			"defa",
+			"dump",
+			"keys",
+			"dump",
+			"icon{",
+			"icon",
+			"chrome://",
+			"icon:",
+			"dactyl.name",
+			"folderI",
+			"icon",
+			"folderI",
+			"icon",
+			"chrome://",
+			"dactyl",
+			"status",
+			"icon",
+			"completion.addonType"
+		],
+		"highlight": true,
+		"in_selection": false,
+		"preserve_case": false,
+		"regex": false,
+		"replace_history":
+		[
+			"",
+			"true",
+			"\"$1\"",
+			"\"$1\":",
+			"\"$1\"",
+			"",
+			"let",
+			"var",
+			"cached_property",
+			"SYNC_DIR",
+			"self",
+			"theme",
+			"",
+			"\\r",
+			"",
+			",",
+			":",
+			",",
+			"",
+			"create-blog-entry",
+			"fst",
+			"alignment",
+			"column",
+			"columns",
+			"selection",
+			"region",
+			"",
+			"region",
+			"",
+			"panel",
+			"ballance",
+			"lst",
+			"zip",
+			"Users"
+		],
+		"reverse": false,
+		"show_context": true,
+		"use_buffer2": true,
+		"whole_word": false,
+		"wrap": true
+	},
+	"groups":
+	[
+		{
+			"sheets":
+			[
+			]
+		}
+	],
+	"incremental_find":
+	{
+		"height": 32.0
+	},
+	"input":
+	{
+		"height": 27.0
+	},
+	"layout":
+	{
+		"cells":
+		[
+			[
+				0,
+				0,
+				1,
+				1
+			]
+		],
+		"cols":
+		[
+			0.0,
+			1.0
+		],
+		"rows":
+		[
+			0.0,
+			1.0
+		]
+	},
+	"menu_visible": true,
+	"replace":
+	{
+		"height": 62.0
+	},
+	"save_all_on_build": true,
+	"select_file":
+	{
+		"height": 0.0,
+		"selected_items":
+		[
+			[
+				"io",
+				"modules/io.jsm"
+			],
+			[
+				"fo",
+				"modules/foldercache.jsm"
+			],
+			[
+				"book",
+				"content/bookmarks.js"
+			],
+			[
+				"boo",
+				"modules/bookmarkcache.jsm"
+			],
+			[
+				"add",
+				"modules/addons.jsm"
+			],
+			[
+				"ut",
+				"modules/util.jsm"
+			],
+			[
+				"ma",
+				"modules/main.jsm"
+			],
+			[
+				"fol",
+				"modules/foldercache.jsm"
+			],
+			[
+				"base",
+				"modules/base.jsm"
+			],
+			[
+				"boostr",
+				"modules/bootstrap.jsm"
+			],
+			[
+				"opt",
+				"modules/options.jsm"
+			],
+			[
+				"dac",
+				"content/dactyl.js"
+			],
+			[
+				"utl",
+				"modules/util.jsm"
+			],
+			[
+				"ba",
+				"modules/base.jsm"
+			],
+			[
+				"comm",
+				"modules/commands.jsm"
+			],
+			[
+				"his",
+				"content/history.js"
+			],
+			[
+				"bas",
+				"modules/base.jsm"
+			],
+			[
+				"abo",
+				"content/about.xul"
+			],
+			[
+				"tabs",
+				"content/tabs.js"
+			],
+			[
+				"buff",
+				"modules/buffer.jsm"
+			],
+			[
+				"te",
+				"modules/template.jsm"
+			],
+			[
+				"hin",
+				"content/hints.js"
+			],
+			[
+				"hints",
+				"content/hints.js"
+			],
+			[
+				"tem",
+				"modules/template.jsm"
+			],
+			[
+				"conf",
+				"modules/config.jsm"
+			],
+			[
+				"sto",
+				"storage.jsm"
+			],
+			[
+				"ro",
+				"router.js"
+			],
+			[
+				"colo",
+				"colors.py"
+			],
+			[
+				"css",
+				"css-colors.py"
+			],
+			[
+				"",
+				"colors.py"
+			],
+			[
+				"co",
+				"colors.py"
+			],
+			[
+				"re",
+				"README.md"
+			],
+			[
+				"temp",
+				"templates.py"
+			],
+			[
+				"test",
+				"/Users/ask/Library/Application Support/Sublime Text 2/Packages/User/test_hi.py"
+			],
+			[
+				"flatten",
+				"alternative_autocompletion/unite/sources/filenames/tests/test_fn_compl.py"
+			],
+			[
+				"load",
+				"alternative_autocompletion/unite/other/load.py"
+			],
+			[
+				"unit",
+				"alternative_autocompletion/unite/other/unite.py"
+			],
+			[
+				"filena",
+				"alternative_autocompletion/sources/from filenames/completions.py"
+			],
+			[
+				"bufft",
+				"alternative_autocompletion/sources/from buffers/completions.py"
+			],
+			[
+				"com",
+				"alternative_autocompletion/sources/from buffers/completions.py"
+			],
+			[
+				"comp",
+				"alternative_autocompletion/sources/from filenames/completions.py"
+			],
+			[
+				"buffer",
+				"alternative_autocompletion/sources/from buffers/completions.py"
+			],
+			[
+				"pynames",
+				"SublimeRope/rope/base/pynames.py"
+			],
+			[
+				"wo",
+				"SublimeRope/rope/base/worder.py"
+			],
+			[
+				"wor",
+				"SublimeRope/rope/base/worder.py"
+			],
+			[
+				"str",
+				"/System/Library/Frameworks/Python.framework/Versions/2.6/lib/python2.6/string.py"
+			],
+			[
+				"class",
+				"/Users/ask/Library/Application Support/Sublime Text 2/Packages/User/Global.sublime-settings"
+			]
+		],
+		"width": 0.0
+	},
+	"select_project":
+	{
+		"height": 500.0,
+		"selected_items":
+		[
+		],
+		"width": 380.0
+	},
+	"show_minimap": true,
+	"show_open_files": true,
+	"show_tabs": false,
+	"side_bar_visible": true,
+	"side_bar_width": 232.0,
+	"status_bar_visible": true
+}
