@@ -17,7 +17,7 @@ class theme(object):
 
     class __metaclass__(type):
         @property
-        def abspash(cls):
+        def abspath(cls):
             theme_path = cls._settings.get('color_scheme') or ""
 
             if theme_path.startswith('Packages'):
@@ -27,15 +27,15 @@ class theme(object):
 
         @property
         def relpath(cls):
-            return relpath(cls.abspash, SUBLIME_PATH)
+            return relpath(cls.abspath, SUBLIME_PATH)
 
         @property
         def dirname(cls):
-            return dirname(cls.abspash)
+            return dirname(cls.abspath)
 
         @property
         def name(cls):
-            return basename(cls.abspash)
+            return basename(cls.abspath)
 
         def set(cls, theme):
             """theme: abs or relpath to PACKAGES_PATH"""
