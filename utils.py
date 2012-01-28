@@ -14,7 +14,7 @@ def on_off(b):
     return "off" if b else "on"
 
 
-def menu(l, g):
+def menu_template(lstate, gstate):
     menu = """
     [
     { "id": "view",
@@ -26,30 +26,29 @@ def menu(l, g):
             [
             {"caption": "turn %s for this file",
             "command": "toggle_auto_css_colorize"},
-            {"caption": "turn %s globaly",
-            "command": "toggle_auto_css_colorize",
-            "checkbox": true}
+            {"caption": "turn %s globally",
+            "command": "toggle_auto_css_colorize"}
             ]
         }
     ]
     }
     ]
-    """ % (on_off(l), on_off(g))
+    """ % (on_off(lstate), on_off(gstate))
     return menu
 
 
-def write_menu(text):
+def write_menu(string):
     with open(MENU_FILE, 'w') as m:
-        m.write(text)
+        m.write(string)
 
 
-def generate_menu(l, g):
-    # user_settings = Settings('CSS-colors.sublime-settings')
-    # state = user_settings.dynamic_highlight
-    menu_content = menu(l, g)
+def generate_menu(lstate, gstate):
+    """ Writes Main.sublime-menu file to package directory"""
+    menu_content = menu_template(lstate, gstate)
     write_menu(menu_content)
 
 
 def rm_menu():
+    """ Deletes Main.sublime-menu file from package directory"""
     if exists(MENU_FILE):
         os.remove(MENU_FILE)
