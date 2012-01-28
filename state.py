@@ -1,39 +1,45 @@
 import sublime
 
-from settings import Settings
-
-in_memory_settings = Settings('Colorized.sublime-settings')
+# from theme import theme
+# from debug import log
 
 
 class State(object):
+    """ Wrapper around sublime settings
+        dump not _properties of children to st settings obj
+    """
 
-    def __init__(self, colors, file_id):
-        self._settings = sublime.load_settings('Colorized.sublime-settings')
-        self.colors = colors
-        self.file_id = file_id
+    def __init__(self, file_id, colors=False):
+        self._colors = colors or []
+        self._file_id = str(file_id)
+        self._settings = sublime.load_settings('in_memory_settings')
+        if not self._settings.get(self._file_id):
+            self._settings.set(self._file_id, {})
+        self.global_live_css = False
 
-    def save(self):
-        state = {self.file_id: {'colors': [str(x) for x in self.colors]}}
-        self._settings.set('state', state)
+    def __getattribute__(self, attr):
+        if not attr.startswith("_"):
+            s = self._settings.get(self._file_id)
+            return s.get(attr)
 
-    @property
-    def need_generate_new_color_file(self):
-        saved_colors = self.saved_state['colors']
-        if set(self.colors) - set(saved_colors):
-            return True
+        return object.__getattribute__(self, attr)
 
-    @property
-    def saved_state(self):
-        """Returns saved colors if any
-        or empty state
-        """
+    def __setattr__(self, attr, value):
+        object.__setattr__(self, attr, value)
+        if not attr.startswith("_"):
+            s = self._settings.get(self._file_id)
+            s[attr] = value
+            self._settings.set(self._file_id, s)
 
-        s = self._settings.get('state')
-        if not s or not s.get(self.file_id):
-            return {'colors': []}
-        return s[self.file_id]
 
-    def erase(self):
-        s = self._settings.get('state')
-        if s:
-            self._settings.erase('state')
+def need_generate_new_color_file(state):
+    if set(state._colors) - set(state.colors or []):
+        generate = True
+    else:
+        generate = False
+    state.colors = [str(x) for x in state._colors]
+    return generate
+
+
+def erase(state):
+   state._settings.set(state._file_id, {})

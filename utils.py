@@ -1,33 +1,40 @@
 from os.path import join as joinpath
-from os.path import abspath, exists
-from os import curdir, remove
+from os.path import exists, abspath
+import os
 
-from settings import Settings
 
-PLUGIN_PATH = abspath(curdir)
-MENU_FILE = joinpath(PLUGIN_PATH, "Main.sublime-menu")
+# Taken from sublime-git
+PLUGIN_DIRECTORY = abspath(os.curdir.replace(os.path.normpath(
+                   os.path.join(os.getcwd(), '..', '..')) + os.path.sep, '').\
+                   replace(os.path.sep, '/'))
+MENU_FILE = joinpath(PLUGIN_DIRECTORY, "Main.sublime-menu")
 
 
 def on_off(b):
-    val = "off" if b else "on"
-    return val
+    return "off" if b else "on"
 
 
-def menu(state):
+def menu(l, g):
     menu = """
     [
+    { "id": "view",
+    "children":
+    [
         {
-            "id": "view",
+            "caption": "live css colorizing",
             "children":
             [
-                {
-                    "caption": "turn css dynamic highligting %s",
-                    "command": "toggle_auto_css_colorize"
-                }
-                ]
-            }
+            {"caption": "turn %s for this file",
+            "command": "toggle_auto_css_colorize"},
+            {"caption": "turn %s globaly",
+            "command": "toggle_auto_css_colorize",
+            "checkbox": true}
+            ]
+        }
     ]
-    """ % on_off(state)
+    }
+    ]
+    """ % (on_off(l), on_off(g))
     return menu
 
 
@@ -36,13 +43,13 @@ def write_menu(text):
         m.write(text)
 
 
-def generate_menu():
-    user_settings = Settings('CSS-colors.sublime-settings')
-    state = user_settings.dynamic_highlight
-    menu_content = menu(state)
+def generate_menu(l, g):
+    # user_settings = Settings('CSS-colors.sublime-settings')
+    # state = user_settings.dynamic_highlight
+    menu_content = menu(l, g)
     write_menu(menu_content)
 
 
 def rm_menu():
     if exists(MENU_FILE):
-        remove(MENU_FILE)
+        os.remove(MENU_FILE)
