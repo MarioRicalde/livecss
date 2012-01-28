@@ -12,8 +12,22 @@ import sublime_plugin
 from theme import *
 from state import State, need_generate_new_color_file, erase
 from color import Color
-from utils import generate_menu, rm_menu
+from utils import create_menu, rm_menu
 from debug import *
+
+
+def generate_menu(view):
+    state = State(view.buffer_id())
+    global_live_css = state.global_live_css
+    this_file_live_css = state.this_file_live_css
+    create_menu(this_file_live_css, global_live_css)
+
+
+def file_is_css(view):
+    any_point = view.sel()[0].begin()
+    file_scope = view.scope_name(any_point).split()[0]
+    if file_scope == 'source.css':
+        return True
 
 
 def clear_css_regions(view):
@@ -167,66 +181,49 @@ class CssColorizeEventer(sublime_plugin.EventListener):
     def on_load(self, view):
         # clean, set theme to uncolorized if necessary
         state = State(view.buffer_id())
-        global_live_css = state.global_live_css
-        this_file_live_css = state.this_file_live_css
-        if self.file_is_css:
-            generate_menu(this_file_live_css, global_live_css) 
-        if not global_live_css:
+
+        if not state.global_live_css:
             return
-        self.view = view
+
         # theme.on_select_new_theme(lambda: colorize_if_not(view))
-        if self.file_is_css:
+        if file_is_css(view):
+            generate_menu(view)
             colorize_css(view, True)
 
     def on_modified(self, view):
-        if not State(view.buffer_id()).this_file_live_css:
+        state = State(view.buffer_id())
+        if not state.this_file_live_css:
             return
-        self.view = view
-        if self.file_is_css:
+        if file_is_css(view) and state.global_live_css:
             colorize_css(view, False)
 
     def on_activated(self, view):
-        self.on_modified(view)
-        self.view = view
-        if self.file_is_css:
-            state = State(view.buffer_id())
-            global_live_css = state.global_live_css
-            this_file_live_css = state.this_file_live_css
-            generate_menu(this_file_live_css, global_live_css)
-            log("Menu was created")
+        """Creates menu on gaining focus"""
+        if file_is_css(view):
+            generate_menu(view)
+            self.on_modified(view)
 
     def on_deactivated(self, view):
-        self.view = view
-        if self.file_is_css:
+        """Destroys menu on focus lost"""
+        if file_is_css(view):
             rm_menu()
-            log("Menu was deleted")
-
-    @property
-    def file_is_css(self):
-        any_point = self.view.sel()[0].begin()
-        file_scope = self.view.scope_name(any_point).split()[0]
-        if file_scope == 'source.css':
-            return True
 
 
 class ToggleAutoCssColorizeCommand(sublime_plugin.TextCommand):
-    def run(self, view):
+    def run(self, edit, kind):
         state = State(self.view.buffer_id())
-        if state.this_file_live_css:
+        if kind == "this_file_live_css":
+            state_attr = state.this_file_live_css
+        elif kind == "global_live_css":
+            state_attr = state.global_live_css
+
+        if state_attr:
             self.view.window().run_command('css_uncolorize')
         else:
             self.view.window().run_command('css_colorize', {'erase_state': True})
-        state.this_file_live_css = not state.this_file_live_css
-        generate_menu(state.this_file_live_css, state.global_live_css)
+
+        state_attr = setattr(state, kind, not state_attr)
+        generate_menu(self.view)
 
     def is_enabled(self):
-        # state = State(self.view.buffer_id())
-        return self.file_is_css
-
-    @property
-    def file_is_css(self):
-        any_point = self.view.sel()[0].begin()
-        file_scope = self.view.scope_name(any_point).split()[0]
-        if file_scope == 'source.css':
-            return True
-
+        return file_is_css(self.view)
