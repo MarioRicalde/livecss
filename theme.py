@@ -1,4 +1,4 @@
-from os.path import join, basename, dirname, normpath, relpath
+from os.path import join, basename, dirname, normpath, relpath, exists
 from random import randint
 import re
 
@@ -37,9 +37,10 @@ class theme(object):
         def name(cls):
             return basename(cls.abspath)
 
-        def set(cls, theme):
+        def set(cls, theme_path):
             """theme: abs or relpath to PACKAGES_PATH"""
-            cls._settings.set('color_scheme', theme)
+            if exists(theme_path):
+                cls._settings.set('color_scheme', theme_path)
 
         def on_select_new_theme(cls, callback):
             cls._settings.add_on_change('color_scheme', callback)
