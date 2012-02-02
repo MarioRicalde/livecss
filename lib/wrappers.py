@@ -43,17 +43,17 @@ class Props(object):
     def __init__(self, callbacks):
         if not isinstance(callbacks, list) or \
            not isinstance(callbacks, tuple):
-            callbacks = [callbacks]
+            callbacks = tuple(callbacks)
 
-        self.callbacks = []
+        self._callbacks = []
         for cb in callbacks:
             if not callable(cb):
-                self.callbacks.append(make_eq(cb))
+                self._callbacks.append(make_eq(cb))
             else:
-                self.callbacks.append(cb)
+                self._callbacks.append(cb)
 
     def __contains__(self, attr):
-        return any(cb(attr) for cb in self.callbacks)
+        return any(cb(attr) for cb in self._callbacks)
 
 
 class PerFileConfig(object):
