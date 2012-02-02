@@ -6,7 +6,7 @@ class State(PerFileConfig):
         super(State, self).__init__(id=id,
                                     settings_file='temp',
                                     in_memory=True,
-                                    ignored_props=('need_generate_theme_file', 'erase'))
+                                    ignored_attrs=('need_generate_theme_file', 'erase'))
         self._colors = colors or []
 
     @property

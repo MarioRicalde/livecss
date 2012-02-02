@@ -39,5 +39,3 @@ def need_colorization(view):
 def rm_if_exists(path):
     if exists(path):
         rm(path)
-
-escape = lambda s: "\'" + s + "\'"

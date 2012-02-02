@@ -8,6 +8,7 @@ from plistlib import writePlist as write_plist
 from theme import *
 from state import State
 from config import Config
+from helpers import escape
 from color import Color
 from utils import *
 from debug import *
