@@ -45,28 +45,28 @@ class theme(object):
         def on_select_new_theme(cls, callback):
             cls._settings.add_on_change('color_scheme', callback)
 
+        @property
+        def is_colorized(self):
+            if self.name.startswith(self.prefix):
+                return True
 
-def is_colorized(theme):
-    if theme.name.startswith(theme.prefix):
-        return True
+        @property
+        def colorized_path(self):
+            return join(self.dirname, self.colorized_name)
 
+        @property
+        def colorized_name(self):
+            random = str(randint(1, 10 ** 15)) + '-'
+            return self.prefix + random + self.uncolorized_name
 
-def colorized_path(theme):
-    return join(theme.dirname, colorized_name(theme))
+        @property
+        def uncolorized_name(self):
+            if self.is_colorized:
+                s = re.search(self.prefix + "(\d+-)?(?P<Name>.*)", self.name)
+                self_name = s.group('Name')
+                return self_name
+            return self.name
 
-
-def colorized_name(theme):
-    random = str(randint(1, 10 ** 15)) + '-'
-    return theme.prefix + random + uncolorized_name(theme)
-
-
-def uncolorized_name(theme):
-    if is_colorized(theme):
-        s = re.search(theme.prefix + "(\d+-)?(?P<Name>.*)", theme.name)
-        theme_name = s.group('Name')
-        return theme_name
-    return theme.name
-
-
-def uncolorized_path(theme):
-    return join(theme.dirname, uncolorized_name(theme))
+        @property
+        def uncolorized_path(self):
+            return join(self.dirname, self.uncolorized_name)
