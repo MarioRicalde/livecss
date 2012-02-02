@@ -41,9 +41,9 @@ make_eq = lambda x: lambda y: x == y
 
 class Props(object):
     def __init__(self, callbacks):
-        if not isinstance(callbacks, list) or \
+        if not isinstance(callbacks, list) and \
            not isinstance(callbacks, tuple):
-            callbacks = tuple(callbacks)
+            callbacks = [callbacks]
 
         self._callbacks = []
         for cb in callbacks:
