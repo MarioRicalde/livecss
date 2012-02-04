@@ -44,10 +44,7 @@ def colorize_file(view, erase_state=False):
         colorized_theme = generate_theme(theme_path, colors)
         theme.set(colorized_theme)
 
-        if state.theme_path:
-            rm_if_exists(state.theme_path)
-            rm_if_exists(state.theme_path + '.cache')
-
+        rm_theme(state.theme_path)
         state.theme_path = theme.abspath
 
 @logme
@@ -64,8 +61,7 @@ def uncolorize_file(view):
     theme.set(theme.uncolorized_path)
     state = State(file_id(view))
 
-    rm_if_exists(state.theme_path)
-    rm_if_exists(state.theme_path + '.cache')
+    rm_theme(state.theme_path)
 
     state.erase()
 
