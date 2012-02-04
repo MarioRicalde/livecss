@@ -1,15 +1,17 @@
 """Defines some useful python objects
 
-author: Alexandr Skurihin [a.skurihin@gmail.com]
-last-modified: 04.02.2012
+@author: Alexandr Skurihin [a.skurihin@gmail.com]
+@last-modified: 04.02.2012
 """
 
 
 class AvailabilityChecker(object):
-    """Makes 'in' checks easily.
-    Apply given @comparators to checking object,
-    if item in @comparators is not callable, checks if comparing object
-    is equal to this item in @comparators
+    """
+    Can be used to convenient in checking.
+    It works by applying given @comparators to checking object.
+    If item in @comparators is not callable,
+    checks if comparing object is equal to the item in @comparators
+    If @comparators > 1, iterate over @comparators, till first match
 
 
     >>>checker = AvailabilityChecker("checkme")
@@ -18,8 +20,14 @@ class AvailabilityChecker(object):
     >>>checker = AvailabilityChecker(lambda s: s.startswith('_'))
     >>>"_checkme" in checker
     True
+    >>>checker = AvailabilityChecker((lambda s: s.startswith('_'), 4))
+    >>>"__checkme" in checker
+    True
+    >>>4 in checker
+    True
 
     """
+
     def __init__(self, comparators):
         """
         @param {anytype} comparators
@@ -36,8 +44,14 @@ class AvailabilityChecker(object):
                 self._comparators.append(cb)
 
     def __contains__(self, attr):
-        return any(cb(attr) for cb in self._comparators)
-
+        matches = []
+        for cb in self._comparators:
+            try:
+                matches.append(cb(attr))
+            except AttributeError:
+                # if cb was applied to not supported type
+                continue
+        return any(matches)
 
 escape = lambda s: "\'" + s + "\'"
 
