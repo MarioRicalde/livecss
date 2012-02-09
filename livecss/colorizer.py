@@ -1,20 +1,33 @@
+"""
+    livecss.colorizer
+    ~~~~~~~~~
+
+    This module implements python helper objects.
+
+    :copyright: (c) 2012 by Alexandr Skurihin.
+    :license: BSD, see LICENSE for more details.
+
+"""
 # stdlib
 
-from plistlib import readPlist as read_plist
-from plistlib import writePlist as write_plist
+# from plistlib import readPlist as read_plist
+# from plistlib import writePlist as write_plist
+from fast_theme_generation import generate_theme_file
 
 
 # local imports
 from theme import *
 from state import State
 from config import Config
-from helpers import escape
+from helpers import *
 from color import Color
 from utils import *
+from debug import profile
 
 __all__ = ['colorize_file', 'uncolorize_file']
 
 
+@profile('time', 20)
 def colorize_file(view, erase_state=False):
     """Highlight color definition regions
     by it's real colors
@@ -48,12 +61,12 @@ def colorize_file(view, erase_state=False):
 
 
 def uncolorize_file(view):
-    """Remove highlighting from view,
+    """
+    Remove highlighting from view,
     then delete modified theme file, set original theme
     and erase state for the view.
 
-    @param {sublime.view} view
-
+    :param  :attr:`sublime.view` view
     """
 
     clear_css_regions(view)
@@ -64,12 +77,12 @@ def uncolorize_file(view):
 
     state.erase()
 
-
 # extract colors from file
 
 
 def get_colors(view, color_regions):
-    """Extract text from @color_regions and wrap it by Color object.
+    """
+    Extract text from @color_regions and wrap it by Color object.
 
     @param {sublime.view} view
     @param {[sublime.Region]} color_regions
@@ -81,7 +94,8 @@ def get_colors(view, color_regions):
 
 
 def get_colored_regions(view):
-    """Looks for color definitions.
+    """
+    Looks for color definitions.
 
     @param {sublime.view}
     @return {[sublime.Region]}
@@ -113,7 +127,8 @@ def get_cached_theme(theme_path):
 
 
 def generate_theme(theme_path, colors):
-    """Generate new ST theme file
+    """
+    Generate new ST theme file
     with highlighting rules definitions for new colors.
 
     @param {str}   theme_path
@@ -122,19 +137,17 @@ def generate_theme(theme_path, colors):
 
     """
 
-    theme_plist = get_cached_theme(theme_path)
     colorized_theme_path = theme.colorized_path
 
     new_colors = (template(color) for color in set(colors))
-    for el in new_colors:
-        theme_plist['settings'].append(el)
-    write_plist(theme_plist, colorized_theme_path)
+    generate_theme_file(theme_path, new_colors, colorized_theme_path)
 
     return colorized_theme_path
 
 
 def template(color):
-    """Template to insert in theme plist file.
+    """
+    Template to insert in theme plist file.
 
     @param {Color} color
     @return {dict}
@@ -154,7 +167,8 @@ def template(color):
 def highlight_regions(view, regions, colors):
     # TODO: colorize based on file_id
     #       - they defined only for given view
-    """Highlight @regions by @colors
+    """
+    Highlight @regions by @colors
 
     @param {[sublime.Region]}
     @param {[Color]}
@@ -173,7 +187,8 @@ def highlight_regions(view, regions, colors):
 
 
 def clear_css_regions(view):
-    """Remove previously highlighted regions.
+    """
+    Remove previously highlighted regions.
 
     @param {sublime.view} view
 

@@ -16,8 +16,8 @@ def file_id(view):
 
 
 def file_is_css(view):
-    any_point = view.sel()[0].begin()
-    file_scope = view.scope_name(any_point).split()[0]
+    point = view.sel()[0].begin()
+    file_scope = view.scope_name(point).split()[0]
     if file_scope == 'source.css':
         return True
 
@@ -39,3 +39,10 @@ def need_colorization(view):
 def rm_if_exists(path):
     if exists(path):
         rm(path)
+
+
+def rm_theme(path):
+    if path:
+        rm_if_exists(path)
+        rm_if_exists(path + '.cache')
+    

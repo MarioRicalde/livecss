@@ -4,9 +4,9 @@ import sublime_plugin
 # local imports
 # from debug import log
 
-from lib.colorizer import *
-from lib.utils import need_colorization, file_is_css, generate_menu, file_id
-from lib.config import Config
+from livecss.colorizer import *
+from livecss.utils import *
+from livecss.config import Config
 
 
 class CssColorizeCommand(sublime_plugin.TextCommand):
@@ -19,25 +19,25 @@ class CssUncolorizeCommand(sublime_plugin.TextCommand):
         uncolorize_file(self.view)
 
 
-class EventManager(sublime_plugin.EventListener):
-    # def __init__(self):
-    #     # on plugin load
-    #     clean_themes_folder()
+# class EventManager(sublime_plugin.EventListener):
+#     # def __init__(self):
+#     #     # on plugin load
+#     #     clean_themes_folder()
 
-    def on_load(self, view):
-#         # clean!!!, set theme to uncolorized if necessary
+#     def on_load(self, view):
+# #         # clean!!!, set theme to uncolorized if necessary
 
-#         # theme.on_select_new_theme(lambda: colorize_if_not(view))
-        generate_menu(view)
-        if need_colorization(view):
-            colorize_file(view, True)
+# #         # theme.on_select_new_theme(lambda: colorize_if_not(view))
+#         generate_menu(view)
+#         if need_colorization(view):
+#             colorize_file(view, True)
 
-    def on_close(self, view):
-        uncolorize_file(view)
+#     def on_close(self, view):
+#         uncolorize_file(view)
 
-    def on_modified(self, view):
-        if need_colorization(view):
-            colorize_file(view)
+#     def on_modified(self, view):
+#         if need_colorization(view):
+#             colorize_file(view)
 
 #     # def on_activated(self, view):
 #     #     """Creates menu on gaining focus"""
@@ -53,7 +53,7 @@ class EventManager(sublime_plugin.EventListener):
 #             # log('on_deactivated')
 #             # rm_menu()
 
-
+# Make it more robust
 class ToggleLocalLiveCss(sublime_plugin.TextCommand):
     def run(self, edit):
         state = Config(file_id(self.view)).local_on

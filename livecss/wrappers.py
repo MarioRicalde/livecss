@@ -1,13 +1,13 @@
 import sublime
 
 # local imports
-from helpers import AvailabilityChecker
+from helpers import *
 
 
 class Settings(object):
 
     """ Wrapper around sublime settings,
-    which uses ST settings to store instance properties
+    uses ST settings to store instance properties.
 
     """
 
@@ -58,7 +58,8 @@ class PerFileConfig(object):
         @param {anytype} id: identification sign
         @param {str} settings_file: settings file name
         @param {bool} in_memory: save on each attribute setting
-        @param {anytype} ignored_attrs: attribute to ignore
+        @param {anytype} ignored_attrs: attribute to ignore from storing
+                                        in ST settings object
 
         """
 
@@ -84,7 +85,7 @@ class PerFileConfig(object):
 
     def __setattr__(self, attr, value):
         """Always uses standard attribute setter
-        If it's not underscored or found as ignored,
+        If it's not underscored or found in ignored,
         it stores in ST settings
 
         """
