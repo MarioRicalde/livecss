@@ -38,7 +38,6 @@ def colorize_file(view, erase_state=False):
     state = State(view, colors, colored_regions)
 
     if not state.is_dirty:
-        print 'State is clean '
         return
 
     highlight_regions(view, colored_regions, colors, state)
@@ -105,20 +104,6 @@ def get_colored_regions(view):
 
 
 # generate new theme file
-
-
-def get_cached_theme(theme_path):
-    """
-    Optimization method, caches parsed theme file to ST settings
-    @param {str} theme_path absolute theme path
-    @return {dict} parsed theme
-    """
-
-    st_settings = sublime.load_settings(theme_path)
-    if not st_settings.get('theme'):
-        print "Loaded from file"
-        st_settings.set('theme', read_plist(theme_path))
-    return st_settings.get('theme')
 
 
 def generate_theme(theme_path, colors):
