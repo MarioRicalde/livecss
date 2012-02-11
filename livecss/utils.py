@@ -1,7 +1,10 @@
-from menu import create_menu
-from os import remove as rm
-from os.path import exists
 from config import Config
+from state import State
+from theme import theme
+from colorizer import colorize_file
+from menu import create_menu
+
+from os.path import join, dirname, basename
 
 
 def generate_menu(view):
@@ -36,13 +39,12 @@ def need_colorization(view):
         return True
 
 
-def rm_if_exists(path):
-    if exists(path):
-        rm(path)
+def need_uncolorization(view):
+    # document the flow
+    if not file_is_css(view):
+        return
 
-
-def rm_theme(path):
-    if path:
-        rm_if_exists(path)
-        rm_if_exists(path + '.cache')
-    
+    config = Config(file_id(view))
+    global_on = config.global_on
+    if not global_on:
+        return True

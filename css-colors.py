@@ -1,12 +1,12 @@
-# sublime
 import sublime_plugin
 
 # local imports
-# from debug import log
-
 from livecss.colorizer import *
 from livecss.utils import *
+from livecss.file_operatios import clean_junk
 from livecss.config import Config
+from livecss.state import State
+from livecss.theme import theme
 
 
 class CssColorizeCommand(sublime_plugin.TextCommand):
@@ -20,17 +20,14 @@ class CssUncolorizeCommand(sublime_plugin.TextCommand):
 
 
 class EventManager(sublime_plugin.EventListener):
-#     # def __init__(self):
-#     #     # on plugin load
-#     #     clean_themes_folder()
+    def __init__(self):
+        # before anything
+        clean_junk()
 
-#     def on_load(self, view):
-# #         # clean!!!, set theme to uncolorized if necessary
-
-# #         # theme.on_select_new_theme(lambda: colorize_if_not(view))
-#         generate_menu(view)
-#         if need_colorization(view):
-#             colorize_file(view, True)
+    def on_load(self, view):
+        # theme.on_select_new_theme(lambda: colorize_on_change(view))
+        if need_colorization(view):
+            colorize_file(view, True)
 
     def on_close(self, view):
         uncolorize_file(view)
@@ -39,30 +36,32 @@ class EventManager(sublime_plugin.EventListener):
         if need_colorization(view):
             colorize_file(view)
 
-#     # def on_activated(self, view):
-#     #     """Creates menu on gaining focus"""
-#     #     # generate_menu(view)
-#     #     if need_colorization(view):
-#     #         colorize_file(view)
-#     #         log("on_activated")
+    def on_activated(self, view):
+        if file_is_css(view):
+            generate_menu(view)
 
-#     # def on_deactivated(self, view):
-#         # """Destroys menu on focus lost"""
-#         # read as if prev file is css
-#         # if file_is_css(view):
-#             # log('on_deactivated')
-#             # rm_menu()
+            # set file's own theme path
+            # because we use one per css file
+            state = State(view)
+            if state.theme_path:
+                theme.set(state.theme_path)
 
-# Make it more robust
+        if need_colorization(view):
+            colorize_file(view)
+
+        if need_uncolorization(view):
+            uncolorize_file(view)
+
+
 class ToggleLocalLiveCss(sublime_plugin.TextCommand):
     def run(self, edit):
         state = Config(file_id(self.view)).local_on
         if state:
-            self.view.window().run_command('css_uncolorize')
+            uncolorize_file(self.view)
         else:
             colorize_file(self.view, True)
 
-        setattr(Config(file_id(self.view)), 'local_on', not state)
+        Config(file_id(self.view)).local_on = not state
         generate_menu(self.view)
 
     def is_visible(self):
@@ -74,13 +73,14 @@ class ToggleGlobalLiveCss(sublime_plugin.TextCommand):
         state = Config(file_id(self.view))
 
         if state.global_on:
-            if state.local_on:
-                self.view.window().run_command('css_uncolorize')
+            uncolorize_file(self.view)
+            Config(file_id(self.view)).local_on = not state.global_on
         else:
-            colorize_file(self.view, True)
+            if state.local_on:
+                colorize_file(self.view, True)
 
-        setattr(Config(file_id(self.view)), 'global_on', not state.global_on)
+        Config(file_id(self.view)).global_on = not state.global_on
         generate_menu(self.view)
 
-    def is_enabled(self):
+    def is_visible(self):
         return file_is_css(self.view)

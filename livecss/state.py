@@ -3,7 +3,7 @@ from wrappers import PerFileConfig
 
 class State(PerFileConfig):
     def __init__(self, view, colors=False, regions=False):
-        super(State, self).__init__(id=view.buffer_id(),
+        super(State, self).__init__(name=view.buffer_id(),
                                     settings_file='temp',
                                     in_memory=True,
                                     ignored_attrs=('need_generate_theme_file', 'erase', 'is_dirty'))

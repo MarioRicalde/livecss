@@ -8,6 +8,9 @@ PACKAGES_PATH = sublime.packages_path()
 SUBLIME_PATH = dirname(PACKAGES_PATH)
 
 
+def print_(msg):
+    print msg
+
 #TODO: add fallbacks on errors
 class theme(object):
     """Global object represents ST color scheme """
@@ -40,6 +43,7 @@ class theme(object):
         def set(cls, theme_path):
             """theme: abs or relpath to PACKAGES_PATH"""
             if exists(theme_path):
+                print "Setting ", theme_path
                 cls._settings.set('color_scheme', theme_path)
 
         def on_select_new_theme(cls, callback):

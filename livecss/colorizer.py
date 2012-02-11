@@ -11,10 +11,10 @@
 
 from color import Color
 from fast_theme_generation import generate_theme_file
-from helpers import *
+from helpers import escape
 from state import State
-from theme import *
-from utils import *
+from theme import theme
+from file_operatios import rm_theme
 # from debug import profile
 
 __all__ = ['colorize_file', 'uncolorize_file']
@@ -29,13 +29,16 @@ def colorize_file(view, erase_state=False):
 
     """
     #TODO: add erase_state handling
-
+    print "Colorize was called"
     colored_regions = get_colored_regions(view)
     colors = get_colors(view, colored_regions)
     if not colors:
         return
 
     state = State(view, colors, colored_regions)
+    if erase_state:
+        print "State was errased"
+        state.erase()
 
     if not state.is_dirty:
         return
@@ -43,13 +46,11 @@ def colorize_file(view, erase_state=False):
     highlight_regions(view, colored_regions, colors, state)
 
     if state.need_generate_theme_file:
-        # TODO: handle theme change properly
-        if state.theme_path:
-            theme.set(state.theme_path)
 
         colorized_theme = generate_theme(theme.uncolorized_path, colors)
         theme.set(colorized_theme)
 
+        # remove previously used theme if any
         rm_theme(state.theme_path)
         state.theme_path = theme.abspath
 
@@ -121,7 +122,8 @@ def generate_theme(theme_path, colors):
 
     new_colors = (template(color) for color in set(colors))
     generate_theme_file(theme_path, new_colors, colorized_theme_path)
-
+    from os.path import basename
+    print "Theme was generated ", basename(colorized_theme_path)
     return colorized_theme_path
 
 

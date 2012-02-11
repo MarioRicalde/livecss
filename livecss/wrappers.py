@@ -45,17 +45,18 @@ class Settings(object):
         setattr(self, attr, value)
 
     def _save(self):
+        print "Doing save"
         sublime.save_settings(self._settings_file)
 
 
 class PerFileConfig(object):
-    """ Allows to store instance properties in per id base
+    """ Allows to store instance properties in per name base
 
     """
 
-    def __init__(self, id, settings_file, in_memory, ignored_attrs=False):
+    def __init__(self, name, settings_file, in_memory, ignored_attrs=False):
         """
-        @param {anytype} id: identification sign
+        @param {anytype} name: identification sign
         @param {str} settings_file: settings file name
         @param {bool} in_memory: save on each attribute setting
         @param {anytype} ignored_attrs: attribute to ignore from storing
@@ -63,7 +64,7 @@ class PerFileConfig(object):
 
         """
 
-        self._id = str(id)
+        self._id = str(name)
         self._ignored_attrs = AvailabilityChecker(ignored_attrs)
         self._s = Settings(settings_file, in_memory)
 
