@@ -18,16 +18,15 @@ from fast_theme_generation import generate_theme_file
 # local imports
 from theme import *
 from state import State
-from config import Config
+# from config import Config
 from helpers import *
 from color import Color
 from utils import *
-from debug import profile
+# from debug import profile
 
 __all__ = ['colorize_file', 'uncolorize_file']
 
 
-@profile('time', 20)
 def colorize_file(view, erase_state=False):
     """Highlight color definition regions
     by it's real colors
@@ -43,10 +42,13 @@ def colorize_file(view, erase_state=False):
     if not colors:
         return
 
-    current_file = file_id(view)
-    state = State(current_file, colors)
+    state = State(view, colors, colored_regions)
 
-    highlight_regions(view, colored_regions, colors)
+    if not state.is_dirty:
+        print 'State is clean '
+        return
+
+    highlight_regions(view, colored_regions, colors, state)
 
     if state.need_generate_theme_file:
         # TODO: handle theme change properly
@@ -71,7 +73,7 @@ def uncolorize_file(view):
 
     clear_css_regions(view)
     theme.set(theme.uncolorized_path)
-    state = State(file_id(view))
+    state = State(view)
 
     rm_theme(state.theme_path)
 
@@ -164,7 +166,7 @@ def template(color):
     }
 
 
-def highlight_regions(view, regions, colors):
+def highlight_regions(view, regions, colors, state):
     # TODO: colorize based on file_id
     #       - they defined only for given view
     """
@@ -184,6 +186,7 @@ def highlight_regions(view, regions, colors):
         name = "css_color_%d" % count
         view.add_regions(name, [r], c.hex)
         count += 1
+    state.count = count
 
 
 def clear_css_regions(view):

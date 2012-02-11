@@ -19,7 +19,7 @@ class CssUncolorizeCommand(sublime_plugin.TextCommand):
         uncolorize_file(self.view)
 
 
-# class EventManager(sublime_plugin.EventListener):
+class EventManager(sublime_plugin.EventListener):
 #     # def __init__(self):
 #     #     # on plugin load
 #     #     clean_themes_folder()
@@ -32,12 +32,12 @@ class CssUncolorizeCommand(sublime_plugin.TextCommand):
 #         if need_colorization(view):
 #             colorize_file(view, True)
 
-#     def on_close(self, view):
-#         uncolorize_file(view)
+    def on_close(self, view):
+        uncolorize_file(view)
 
-#     def on_modified(self, view):
-#         if need_colorization(view):
-#             colorize_file(view)
+    def on_modified(self, view):
+        if need_colorization(view):
+            colorize_file(view)
 
 #     # def on_activated(self, view):
 #     #     """Creates menu on gaining focus"""
@@ -71,14 +71,15 @@ class ToggleLocalLiveCss(sublime_plugin.TextCommand):
 
 class ToggleGlobalLiveCss(sublime_plugin.TextCommand):
     def run(self, edit):
-        state = Config(file_id(self.view)).global_on
+        state = Config(file_id(self.view))
 
-        if state:
-            self.view.window().run_command('css_uncolorize')
+        if state.global_on:
+            if state.local_on:
+                self.view.window().run_command('css_uncolorize')
         else:
             colorize_file(self.view, True)
 
-        setattr(Config(file_id(self.view)), 'global_on', not state)
+        setattr(Config(file_id(self.view)), 'global_on', not state.global_on)
         generate_menu(self.view)
 
     def is_enabled(self):
