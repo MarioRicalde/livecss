@@ -8,19 +8,12 @@
     :license: BSD, see LICENSE for more details.
 
 """
-# stdlib
 
-# from plistlib import readPlist as read_plist
-# from plistlib import writePlist as write_plist
-from fast_theme_generation import generate_theme_file
-
-
-# local imports
-from theme import *
-from state import State
-# from config import Config
-from helpers import *
 from color import Color
+from fast_theme_generation import generate_theme_file
+from helpers import *
+from state import State
+from theme import *
 from utils import *
 # from debug import profile
 

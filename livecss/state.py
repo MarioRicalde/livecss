@@ -13,13 +13,14 @@ class State(PerFileConfig):
 
     @property
     def is_dirty(self):
+        # if we don't have previously saved state
         if not self.regions:
             is_dirty = True
 
         old_regions = get_highlighted_regions(self._view, self.count)
         new_regions = self._regions
 
-        if str(old_regions) == str(new_regions):
+        if old_regions == new_regions:
             is_dirty = False
         else:
             is_dirty = True
@@ -30,21 +31,23 @@ class State(PerFileConfig):
     @property
     def need_generate_theme_file(self):
         if set(self._colors) - set(self.colors or []):
-            generate = True
+            need_generate = True
         else:
-            generate = False
+            need_generate = False
         self.colors = [str(x) for x in self._colors]
-        return generate
+        return need_generate
 
     def erase(self):
         self._s[self._id] = {}
 
 
-def get_highlighted_regions(view, last_count):
-    if not last_count:
-        return []
+def get_highlighted_regions(view, last_highlighted_region):
+    """ Returns currently highlighted regions
+    """
+    if not last_highlighted_region:
+        return
     regions = []
-    for i in range(int(last_count)):
+    for i in range(int(last_highlighted_region)):
         region = view.get_regions('css_color_%d' % i)
         if region:
             regions.append(region[0])
