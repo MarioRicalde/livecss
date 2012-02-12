@@ -9,7 +9,6 @@ PACKAGES_PATH = sublime.packages_path()
 SUBLIME_PATH = os.path.dirname(PACKAGES_PATH)
 
 
-#TODO: add fallbacks on errors
 class theme(object):
     """Global object represents ST color scheme """
 

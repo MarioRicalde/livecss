@@ -66,4 +66,3 @@ def generate_theme_file(theme_file_path, dict_seq, new_theme_file_path):
 
     with open(new_theme_file_path, 'w') as f:
         f.write(new_theme_text)
-         

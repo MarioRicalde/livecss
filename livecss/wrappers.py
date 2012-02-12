@@ -45,7 +45,6 @@ class Settings(object):
         setattr(self, attr, value)
 
     def _save(self):
-        print "Doing save"
         sublime.save_settings(self._settings_file)
 
 

@@ -1,6 +1,8 @@
 [
-    { "caption": "css_colorize",
+    { "caption": "Colorize css",
       "command": "css_colorize",
       "args": {"erase_state": true}},
-    { "caption": "css_uncolorize", "command": "css_uncolorize"}
+    { "caption": "Uncolorize css", "command": "css_uncolorize"},
+    { "caption": "Toggle livecss localy", "command": "toggle_global_live_css"},
+    { "caption": "Toggle livecss globally", "command": "toggle_local_live_css"}
 ]

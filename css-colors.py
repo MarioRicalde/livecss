@@ -2,13 +2,11 @@ import sublime_plugin
 
 # local imports
 from livecss.colorizer import *
-from livecss.utils import *
-from livecss.file_operatios import clean_junk
 from livecss.config import Config
+from livecss.file_operatios import clean_junk
 from livecss.state import State
 from livecss.theme import theme
-
-from livecss.debug import log
+from livecss.utils import need_colorization, need_uncolorization, file_is_css, generate_menu, colorize_on_select_new_theme
 
 
 class CssColorizeCommand(sublime_plugin.TextCommand):
@@ -24,12 +22,12 @@ class CssUncolorizeCommand(sublime_plugin.TextCommand):
 class EventManager(sublime_plugin.EventListener):
     def __init__(self):
         # before anything
-        # theme.set(theme.uncolorized_path)
         clean_junk()
-        # print "settings", uncolorized_path
 
     def on_load(self, view):
-        theme.on_select_new_theme(lambda: selected_new_theme(view))
+        # re colorize if different theme was chosen
+        theme.on_select_new_theme(lambda: colorize_on_select_new_theme(view))
+
         if need_colorization(view):
             colorize_file(view, True)
 
@@ -42,7 +40,6 @@ class EventManager(sublime_plugin.EventListener):
 
     def on_activated(self, view):
         if file_is_css(view):
-            log("on_activated was called")
             generate_menu(view)
 
             # set file's own theme path
@@ -58,33 +55,33 @@ class EventManager(sublime_plugin.EventListener):
             uncolorize_file(view)
 
 
-class ToggleLocalLiveCss(sublime_plugin.TextCommand):
+class ToggleLocalLiveCssCommand(sublime_plugin.TextCommand):
     def run(self, edit):
-        state = Config(file_id(self.view)).local_on
+        state = Config(self.view).local_on
         if state:
             uncolorize_file(self.view)
         else:
             colorize_file(self.view, True)
 
-        Config(file_id(self.view)).local_on = not state
+        Config(self.view).local_on = not state
         generate_menu(self.view)
 
     def is_visible(self):
         return file_is_css(self.view)
 
 
-class ToggleGlobalLiveCss(sublime_plugin.TextCommand):
+class ToggleGlobalLiveCssCommand(sublime_plugin.TextCommand):
     def run(self, edit):
-        state = Config(file_id(self.view))
+        state = Config(self.view)
 
         if state.global_on:
             uncolorize_file(self.view)
-            Config(file_id(self.view)).local_on = not state.global_on
+            Config(self.view).local_on = not state.global_on
         else:
             if state.local_on:
                 colorize_file(self.view, True)
 
-        Config(file_id(self.view)).global_on = not state.global_on
+        Config(self.view).global_on = not state.global_on
         generate_menu(self.view)
 
     def is_visible(self):

@@ -11,11 +11,10 @@
 
 from color import Color
 from fast_theme_generation import generate_theme_file
+from file_operatios import rm_theme
 from helpers import escape
 from state import State
-from theme import *
-from file_operatios import rm_theme
-# from debug import profile
+from theme import theme, uncolorized_path, colorized_path
 
 __all__ = ['colorize_file', 'uncolorize_file']
 
@@ -66,8 +65,8 @@ def uncolorize_file(view):
 
     state.erase()
 
-# extract colors from file
 
+# extract colors from file
 
 def get_colors(view, color_regions):
     """
@@ -99,7 +98,6 @@ def get_colored_regions(view):
 
 
 # generate new theme file
-
 
 def generate_theme(theme_path, colors):
     """
@@ -139,9 +137,9 @@ def template(color):
     }
 
 
+# add/remove regions from view
+
 def highlight_regions(view, regions, colors, state):
-    # TODO: colorize based on file_id
-    #       - they defined only for given view
     """
     Highlight @regions by @colors
 
@@ -173,13 +171,10 @@ def clear_css_regions(view):
     count = 0
     while count != -1:
         name = "css_color_%d" % count
-        if len(view.get_regions(name)) != 0:
+        if len(view.get_regions(name)):
+#        if len(view.get_regions(name)) != 0:
+
             view.erase_regions(name)
             count += 1
         else:
             count = -1
-
-# add later
-
-# add to file change event (on_activate)
-# theme.set(state.theme_path) # why ?

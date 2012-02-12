@@ -1,13 +1,13 @@
 from config import Config
 from state import State
-from theme import *
+from theme import theme, uncolorized_path
 from colorizer import colorize_file
 from menu import create_menu
 
 import sublime
 
 
-def selected_new_theme(view):
+def colorize_on_select_new_theme(view):
     state = State(view)
     if not state.theme_path:
         return
@@ -18,7 +18,7 @@ def selected_new_theme(view):
 
 
 def generate_menu(view):
-    config = Config(file_id(view))
+    config = Config(view)
     global_opt = config.global_on
     local_opt = config.local_on
     create_menu(local_opt, global_opt)
@@ -36,11 +36,10 @@ def file_is_css(view):
 
 
 def need_colorization(view):
-    # document the flow
     if not file_is_css(view):
         return
 
-    config = Config(file_id(view))
+    config = Config(view)
     global_on = config.global_on
     local_on = config.local_on
     if not local_on:
@@ -50,11 +49,10 @@ def need_colorization(view):
 
 
 def need_uncolorization(view):
-    # document the flow
     if not file_is_css(view):
         return
 
-    config = Config(file_id(view))
+    config = Config(view)
     global_on = config.global_on
     if not global_on:
         return True
