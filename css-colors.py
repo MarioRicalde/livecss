@@ -8,6 +8,8 @@ from livecss.config import Config
 from livecss.state import State
 from livecss.theme import theme
 
+from livecss.debug import log
+
 
 class CssColorizeCommand(sublime_plugin.TextCommand):
     def run(self, edit, erase_state=False):
@@ -22,10 +24,12 @@ class CssUncolorizeCommand(sublime_plugin.TextCommand):
 class EventManager(sublime_plugin.EventListener):
     def __init__(self):
         # before anything
+        # theme.set(theme.uncolorized_path)
         clean_junk()
+        # print "settings", uncolorized_path
 
     def on_load(self, view):
-        # theme.on_select_new_theme(lambda: colorize_on_change(view))
+        theme.on_select_new_theme(lambda: selected_new_theme(view))
         if need_colorization(view):
             colorize_file(view, True)
 
@@ -38,6 +42,7 @@ class EventManager(sublime_plugin.EventListener):
 
     def on_activated(self, view):
         if file_is_css(view):
+            log("on_activated was called")
             generate_menu(view)
 
             # set file's own theme path

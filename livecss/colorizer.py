@@ -13,7 +13,7 @@ from color import Color
 from fast_theme_generation import generate_theme_file
 from helpers import escape
 from state import State
-from theme import theme
+from theme import *
 from file_operatios import rm_theme
 # from debug import profile
 
@@ -23,13 +23,8 @@ __all__ = ['colorize_file', 'uncolorize_file']
 def colorize_file(view, erase_state=False):
     """Highlight color definition regions
     by it's real colors
-
-    @param {sublime.view} view
-    @param {bool} erase_state: use saved state for this file
-
     """
-    #TODO: add erase_state handling
-    print "Colorize was called"
+
     colored_regions = get_colored_regions(view)
     colors = get_colors(view, colored_regions)
     if not colors:
@@ -37,7 +32,6 @@ def colorize_file(view, erase_state=False):
 
     state = State(view, colors, colored_regions)
     if erase_state:
-        print "State was errased"
         state.erase()
 
     if not state.is_dirty:
@@ -47,7 +41,7 @@ def colorize_file(view, erase_state=False):
 
     if state.need_generate_theme_file:
 
-        colorized_theme = generate_theme(theme.uncolorized_path, colors)
+        colorized_theme = generate_theme(uncolorized_path(theme.abspath), colors)
         theme.set(colorized_theme)
 
         # remove previously used theme if any
@@ -65,7 +59,7 @@ def uncolorize_file(view):
     """
 
     clear_css_regions(view)
-    theme.set(theme.uncolorized_path)
+    theme.set(uncolorized_path(theme.abspath))
     state = State(view)
 
     rm_theme(state.theme_path)
@@ -118,12 +112,11 @@ def generate_theme(theme_path, colors):
 
     """
 
-    colorized_theme_path = theme.colorized_path
+    colorized_theme_path = colorized_path(theme.abspath)
 
     new_colors = (template(color) for color in set(colors))
     generate_theme_file(theme_path, new_colors, colorized_theme_path)
-    from os.path import basename
-    print "Theme was generated ", basename(colorized_theme_path)
+
     return colorized_theme_path
 
 

@@ -1,21 +1,20 @@
-from os.path import join, basename, dirname, normpath, relpath, exists
+from os.path import basename, normpath, relpath, exists
+import os.path
 from random import randint
 import re
 
 import sublime
 
 PACKAGES_PATH = sublime.packages_path()
-SUBLIME_PATH = dirname(PACKAGES_PATH)
+SUBLIME_PATH = os.path.dirname(PACKAGES_PATH)
 
-
-def print_(msg):
-    print msg
 
 #TODO: add fallbacks on errors
 class theme(object):
     """Global object represents ST color scheme """
 
-    _settings = sublime.load_settings('Base File.sublime-settings')
+    _settings_file = 'Preferences.sublime-settings'
+    _settings = sublime.load_settings(_settings_file)
     prefix = 'Colorized-'
 
     class __metaclass__(type):
@@ -24,7 +23,7 @@ class theme(object):
             theme_path = cls._settings.get('color_scheme') or ""
 
             if theme_path.startswith('Packages'):
-                theme_path = join(SUBLIME_PATH, theme_path)
+                theme_path = os.path.join(SUBLIME_PATH, theme_path)
 
             return normpath(theme_path)
 
@@ -34,7 +33,7 @@ class theme(object):
 
         @property
         def dirname(cls):
-            return dirname(cls.abspath)
+            return os.path.dirname(cls.abspath)
 
         @property
         def name(cls):
@@ -43,34 +42,37 @@ class theme(object):
         def set(cls, theme_path):
             """theme: abs or relpath to PACKAGES_PATH"""
             if exists(theme_path):
-                print "Setting ", theme_path
                 cls._settings.set('color_scheme', theme_path)
 
         def on_select_new_theme(cls, callback):
             cls._settings.add_on_change('color_scheme', callback)
 
-        @property
-        def is_colorized(self):
-            if self.name.startswith(self.prefix):
-                return True
 
-        @property
-        def colorized_path(self):
-            return join(self.dirname, self.colorized_name)
+def is_colorized(name):
+    if name.startswith(theme.prefix):
+        return True
 
-        @property
-        def colorized_name(self):
-            random = str(randint(1, 10 ** 15)) + '-'
-            return self.prefix + random + self.uncolorized_name
 
-        @property
-        def uncolorized_name(self):
-            if self.is_colorized:
-                s = re.search(self.prefix + "(\d+-)?(?P<Name>.*)", self.name)
-                self_name = s.group('Name')
-                return self_name
-            return self.name
+def colorized_path(path):
+    dirname = os.path.dirname(path)
+    name = basename(path)
+    return os.path.join(dirname, colorized_name(name))
 
-        @property
-        def uncolorized_path(self):
-            return join(self.dirname, self.uncolorized_name)
+
+def colorized_name(name):
+    random = str(randint(1, 10 ** 15)) + '-'
+    return theme.prefix + random + uncolorized_name(name)
+
+
+def uncolorized_name(name):
+    if is_colorized(name):
+        s = re.search(theme.prefix + "(\d+-)?(?P<Name>.*)", name)
+        self_name = s.group('Name')
+        return self_name
+    return name
+
+
+def uncolorized_path(path):
+    dirname = os.path.dirname(path)
+    name = basename(path)
+    return os.path.join(dirname, uncolorized_name(name))
