@@ -45,6 +45,7 @@ def colorize_file(view, erase_state=False):
 
         # remove previously used theme if any
         rm_theme(state.theme_path)
+        # associate theme with file
         state.theme_path = theme.abspath
 
 
@@ -94,7 +95,8 @@ def get_colored_regions(view):
     extra_web = view.find_by_selector("invalid.deprecated.color.w3c-non-standard-color-name.css")
     hex_rgb = view.find_by_selector("constant.other.color.rgb-value.css")
     rbg_percent = view.find_by_selector("constant.other.color.rgb-percentage.css")
-    return w3c + extra_web + hex_rgb + rbg_percent
+    less_colors = view.find_by_selector("constant.other.rgb-value.css")
+    return w3c + extra_web + hex_rgb + rbg_percent + less_colors
 
 
 # generate new theme file
@@ -172,8 +174,6 @@ def clear_css_regions(view):
     while count != -1:
         name = "css_color_%d" % count
         if len(view.get_regions(name)):
-#        if len(view.get_regions(name)) != 0:
-
             view.erase_regions(name)
             count += 1
         else:

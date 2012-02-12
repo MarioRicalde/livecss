@@ -71,9 +71,8 @@ def write_menu(string):
 #TODO: better name
 def create_menu(lstate, gstate):
     """ Writes Main.sublime-menu file to package directory"""
-    print OS
     if OS == 'linux':
-        menu_content = menu_template_for_linux
+        menu_content = menu_template_for_linux()
     else:
         menu_content = menu_template(lstate, gstate)
     write_menu(menu_content)
