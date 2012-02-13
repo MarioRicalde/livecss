@@ -40,8 +40,8 @@ def colorize_file(view, erase_state=False):
 
     if state.need_generate_theme_file:
 
-        colorized_theme = generate_theme(uncolorized_path(theme.abspath), colors)
-        theme.set(colorized_theme)
+        colorized_theme_path = generate_theme(uncolorized_path(theme.abspath), colors)
+        theme.set(colorized_theme_path)
 
         # remove previously used theme if any
         rm_theme(state.theme_path)
@@ -50,12 +50,12 @@ def colorize_file(view, erase_state=False):
 
 
 def uncolorize_file(view):
-    """
-    Remove highlighting from view,
+    """Remove highlighting from view,
     then delete modified theme file, set original theme
     and erase state for the view.
 
     :param  :attr:`sublime.view` view
+
     """
 
     clear_css_regions(view)
@@ -70,21 +70,20 @@ def uncolorize_file(view):
 # extract colors from file
 
 def get_colors(view, color_regions):
-    """
-    Extract text from @color_regions and wrap it by Color object.
+    """Extract text from @color_regions and wrap it by Color object.
 
     @param {sublime.view} view
     @param {[sublime.Region]} color_regions
     @return {[Color]}
 
     """
+
     colors = [Color(view.substr(color)) for color in color_regions]
     return colors
 
 
 def get_colored_regions(view):
-    """
-    Looks for color definitions.
+    """Looks for color definitions.
 
     @param {sublime.view}
     @return {[sublime.Region]}
@@ -102,8 +101,7 @@ def get_colored_regions(view):
 # generate new theme file
 
 def generate_theme(theme_path, colors):
-    """
-    Generate new ST theme file
+    """Generate new ST theme file
     with highlighting rules definitions for new colors.
 
     @param {str}   theme_path
@@ -121,8 +119,7 @@ def generate_theme(theme_path, colors):
 
 
 def template(color):
-    """
-    Template to insert in theme plist file.
+    """Template to insert in theme plist file.
 
     @param {Color} color
     @return {dict}
@@ -142,8 +139,7 @@ def template(color):
 # add/remove regions from view
 
 def highlight_regions(view, regions, colors, state):
-    """
-    Highlight @regions by @colors
+    """Highlight @regions by @colors
 
     @param {[sublime.Region]}
     @param {[Color]}
@@ -163,8 +159,7 @@ def highlight_regions(view, regions, colors, state):
 
 
 def clear_css_regions(view):
-    """
-    Remove previously highlighted regions.
+    """Remove previously highlighted regions.
 
     @param {sublime.view} view
 

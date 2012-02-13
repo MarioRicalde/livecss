@@ -28,7 +28,7 @@ def file_id(view):
     return view.file_name() or view.buffer_id()
 
 
-def fils_is_colorizable(view):
+def is_colorizable(view):
     point = view.sel()[0].begin()
     file_scope = view.scope_name(point).split()[0]
     if file_scope in ['source.scss', 'source.css', 'source.css.less']:
@@ -36,7 +36,7 @@ def fils_is_colorizable(view):
 
 
 def need_colorization(view):
-    if not fils_is_colorizable(view):
+    if not is_colorizable(view):
         return
 
     config = Config(view)
@@ -49,7 +49,7 @@ def need_colorization(view):
 
 
 def need_uncolorization(view):
-    if not fils_is_colorizable(view):
+    if not is_colorizable(view):
         return
 
     config = Config(view)

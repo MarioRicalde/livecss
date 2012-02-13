@@ -6,7 +6,8 @@ from livecss.config import Config
 from livecss.file_operatios import clean_junk
 from livecss.state import State
 from livecss.theme import theme
-from livecss.utils import need_colorization, need_uncolorization, fils_is_colorizable, generate_menu, colorize_on_select_new_theme
+from livecss.utils import (need_colorization, need_uncolorization,
+                           is_colorizable, generate_menu, colorize_on_select_new_theme)
 
 
 class CssColorizeCommand(sublime_plugin.TextCommand):
@@ -39,7 +40,7 @@ class EventManager(sublime_plugin.EventListener):
             colorize_file(view)
 
     def on_activated(self, view):
-        if fils_is_colorizable(view):
+        if is_colorizable(view):
             generate_menu(view)
 
             # set file's own theme path
@@ -67,7 +68,7 @@ class ToggleLocalLiveCssCommand(sublime_plugin.TextCommand):
         generate_menu(self.view)
 
     def is_visible(self):
-        return fils_is_colorizable(self.view)
+        return is_colorizable(self.view)
 
 
 class ToggleGlobalLiveCssCommand(sublime_plugin.TextCommand):
@@ -85,4 +86,4 @@ class ToggleGlobalLiveCssCommand(sublime_plugin.TextCommand):
         generate_menu(self.view)
 
     def is_visible(self):
-        return fils_is_colorizable(self.view)
+        return is_colorizable(self.view)
