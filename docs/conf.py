@@ -46,7 +46,7 @@ source_suffix = '.rst'
 master_doc = 'index'
 
 # General information about the project.
-project = u'css-live-colors'
+project = u'livecss'
 copyright = u'2012, Alexandr Skurihin'
 
 # The version info for the project you're documenting, acts as replacement for

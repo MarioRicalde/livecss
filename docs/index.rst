@@ -3,10 +3,12 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-Welcome to css-live-colors's documentation!
+Welcome to livecss's documentation!
 ===========================================
 
-Contents:
+This plugin underlays the hexadecimal, rgb or named CSS color codes with their real color.
+The foreground color is selected oppositely.
+
 
 .. toctree::
    :maxdepth: 2
