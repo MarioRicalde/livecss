@@ -1,7 +1,17 @@
+# -*- coding: utf-8 -*-
+
+"""
+    livecolors
+    ~~~~~~~~~
+
+    ST commands.
+
+"""
+
 import sublime_plugin
 
 # local imports
-from livecss.colorizer import *
+from livecss.colorizer import colorize_file, uncolorize_file
 from livecss.config import Config
 from livecss.file_operatios import clean_junk
 from livecss.state import State

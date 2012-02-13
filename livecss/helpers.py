@@ -3,10 +3,7 @@
     livecss.helpers
     ~~~~~~~~~
 
-    This module implements python helper objects.
-
-    :copyright: (c) 2012 by Alexandr Skurihin.
-    :license: BSD, see LICENSE for more details.
+    This module implements some python helper objects.
 
     Usage examples:
     --------------

@@ -1,6 +1,17 @@
+# -*- coding: utf-8 -*-
+
+"""
+    livecss.menu
+    ~~~~~~~~~
+
+    This module implements creating ST menu file.
+
+"""
+
+# std lib
+import os
 from os.path import join as joinpath
 from os.path import abspath
-import os
 
 import sublime
 
@@ -17,6 +28,7 @@ def on_off(b):
 
 
 def menu_template(lstate, gstate):
+    """Live menu temoplate"""
     menu = """
     [
         {
@@ -41,6 +53,9 @@ def menu_template(lstate, gstate):
 
 
 def menu_template_for_linux():
+    """Static menu template"""
+    # For now is used on linux, because of menu update bug.
+
     menu = """
     [
         {
@@ -65,12 +80,13 @@ def menu_template_for_linux():
 
 
 def write_menu(string):
+    """Writes menu file to disk"""
     with open(MENU_FILE, 'w') as m:
         m.write(string)
 
 
 def create_menu(lstate, gstate):
-    """ Writes Main.sublime-menu file to package directory"""
+    """Writes Main.sublime-menu file to package directory"""
     if OS == 'linux':
         menu_content = menu_template_for_linux()
     else:

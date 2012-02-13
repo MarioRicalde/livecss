@@ -1,3 +1,11 @@
+# -*- coding: utf-8 -*-
+
+"""
+    livecss.named_colors
+    ~~~~~~~~~
+
+"""
+
 html4_names_to_hex = {'aqua': '#00ffff',
                       'black': '#000000',
                       'blue': '#0000ff',
@@ -165,12 +173,13 @@ css3_names_to_hex = {'aliceblue': '#f0f8ff',
 
 
 class Colors:
+    """Small wrapper to help dealing with named colors"""
     def __init__(self, *args):
         self.dict = dict()
         self.args = args
-        self.concat_dicts()
+        self._concat_dicts()
 
-    def concat_dicts(self):
+    def _concat_dicts(self):
         for d in self.args:
             if isinstance(d, dict):
                 self.dict.update(d)

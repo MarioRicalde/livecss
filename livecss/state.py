@@ -1,8 +1,29 @@
-from wrappers import PerFileConfig
+"""
+    livecss.state
+    ~~~~~~~~~
+
+    This module implements in memory state object.
+
+"""
+
+from .wrappers import PerFileConfig
 
 
 class State(PerFileConfig):
+    """Saves own property values to ST settings file,
+    so it becomes possible to keep track on file's state
+
+    """
+
     def __init__(self, view, colors=False, regions=False):
+        """Can be initialized with new colors and regions
+        or without them to check current file's state
+
+        :param colors: :attr:`bool` New file colors
+        :param regions: :attr:`bool` New file regions containing color definitions
+
+        """
+
         super(State, self).__init__(name=view.buffer_id(),
                                     settings_file='temp',
                                     in_memory=True,
@@ -13,6 +34,8 @@ class State(PerFileConfig):
 
     @property
     def is_dirty(self):
+        """Indicates if state was changed"""
+
         # if we don't have previously saved state
         if not self.regions:
             is_dirty = True
@@ -30,6 +53,8 @@ class State(PerFileConfig):
 
     @property
     def need_generate_theme_file(self):
+        """Indicates if new color definition appeared in current file"""
+
         if set(self._colors) - set(self.colors or []):
             need_generate = True
         else:
@@ -42,8 +67,8 @@ class State(PerFileConfig):
 
 
 def get_highlighted_regions(view, last_highlighted_region):
-    """ Returns currently highlighted regions
-    """
+    """Returns currently highlighted regions for this file"""
+
     if not last_highlighted_region:
         return
     regions = []

@@ -1,7 +1,17 @@
+# -*- coding: utf-8 -*-
+
+"""
+    livecss.colorizer
+    ~~~~~~~~~
+
+    This module implements basic wrappers around ST abstractions.
+
+"""
+
 import sublime
 
 # local imports
-from helpers import *
+from .helpers import AvailabilityChecker
 
 
 class Settings(object):

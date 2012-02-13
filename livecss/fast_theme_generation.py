@@ -1,8 +1,15 @@
-__all__ = ['generate_theme_file']
+# -*- coding: utf-8 -*-
+
+"""
+    livecss.fast_theme_generation
+    ~~~~~~~~~
+
+
+"""
 
 
 def dict_to_plist(dictionary):
-    """ Convert dict object to xml plist format """
+    """Converts dict object to xml plist format"""
     start = '<dict>'
     end = '</dict>'
     out = [start]
@@ -21,11 +28,11 @@ def elem(k, v):
     return '<key>%s</key>\n<string>%s</string>' % (k, v)
 
 
-def seek_until(fo, until):
-    """ Find `until` in `fo`
+def seek_until(fileobj, until):
+    """Finds `until` in `fileobj`
 
-    :param fo: file object
-    :param until: word to Find
+    :param fileobj: file like object
+    :param until: word to find
     :return: found word position in file
 
     """
@@ -33,24 +40,32 @@ def seek_until(fo, until):
     # because we read file from the end
     until = until[::-1]
     offset = -1
-    fo.seek(offset, 2)
+    fileobj.seek(offset, 2)
     word = ""
     while word != until:
         offset = offset - 1
         try:
-            fo.seek(offset, 2)
+            fileobj.seek(offset, 2)
             # read one character by one
-            char = fo.read(1)
+            char = fileobj.read(1)
             if char == '\n' or char == ' ':  # word deviders
                 word = ""
             else:
                 word += char
         except IOError:  # not found
             return
-    return fo.tell() - 1
+    return fileobj.tell() - 1
 
 
 def generate_theme_file(theme_file_path, dict_seq, new_theme_file_path):
+    """Appends `dict_seq`, converting it to plist format to `new_theme_file_path`
+
+    :param theme_file_path: path to the theme file to read from
+    :param dict_seq: list of dictionaries with color definitions
+    :param new_theme_file_path: path to the created theme file
+
+    """
+
     with open(theme_file_path) as f:
         # parse dict objects to plist format
         tempate_to_write = (dict_to_plist(d) for d in dict_seq)

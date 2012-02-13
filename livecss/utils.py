@@ -1,10 +1,22 @@
-from config import Config
-from state import State
-from theme import theme, uncolorized_path
-from colorizer import colorize_file
-from menu import create_menu
+# -*- coding: utf-8 -*-
+
+"""
+    livecss.colorizer
+    ~~~~~~~~~
+
+    This module implements some useful utilities.
+
+"""
 
 import sublime
+
+# local imports
+
+from .config import Config
+from .state import State
+from .theme import theme, uncolorized_path
+from .colorizer import colorize_file
+from .menu import create_menu
 
 
 def colorize_on_select_new_theme(view):

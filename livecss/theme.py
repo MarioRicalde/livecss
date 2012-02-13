@@ -1,6 +1,17 @@
+# -*- coding: utf-8 -*-
+
+"""
+    livecss.theme
+    ~~~~~~~~~
+
+    This module implements abstraction around ST theme.
+
+"""
+
+# std lib
 from os.path import basename, normpath, relpath, exists
-import os.path
 from random import randint
+import os.path
 import re
 
 import sublime

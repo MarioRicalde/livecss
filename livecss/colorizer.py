@@ -1,27 +1,25 @@
+# -*- coding: utf-8 -*-
+
 """
     livecss.colorizer
     ~~~~~~~~~
 
     This module implements python helper objects.
 
-    :copyright: (c) 2012 by Alexandr Skurihin.
-    :license: BSD, see LICENSE for more details.
-
 """
 
-from color import Color
-from fast_theme_generation import generate_theme_file
-from file_operatios import rm_theme
-from helpers import escape
-from state import State
-from theme import theme, uncolorized_path, colorized_path
-
-__all__ = ['colorize_file', 'uncolorize_file']
+from .color import Color
+from .fast_theme_generation import generate_theme_file
+from .file_operatios import rm_theme
+from .helpers import escape
+from .state import State
+from .theme import theme, uncolorized_path, colorized_path
 
 
 def colorize_file(view, erase_state=False):
-    """Highlight color definition regions
-    by it's real colors
+    """Highlights color definition regions by it's real colors.
+    Erase_state setted to True forces recolorization
+
     """
 
     colored_regions = get_colored_regions(view)
@@ -50,11 +48,9 @@ def colorize_file(view, erase_state=False):
 
 
 def uncolorize_file(view):
-    """Remove highlighting from view,
+    """Removes highlighting from view,
     then delete modified theme file, set original theme
     and erase state for the view.
-
-    :param  :attr:`sublime.view` view
 
     """
 
@@ -70,11 +66,10 @@ def uncolorize_file(view):
 # extract colors from file
 
 def get_colors(view, color_regions):
-    """Extract text from @color_regions and wrap it by Color object.
+    """Extracts text from `color_regions` and wraps it by :attr:`livecss.color.Color` object.
 
-    @param {sublime.view} view
-    @param {[sublime.Region]} color_regions
-    @return {[Color]}
+    :param color_regions: list of ST regions which contain color definition
+    :return: list of colors wrapped by :attr:`livecss.color.Color` object
 
     """
 
@@ -83,10 +78,9 @@ def get_colors(view, color_regions):
 
 
 def get_colored_regions(view):
-    """Looks for color definitions.
+    """Returns regions which contain color definition.
 
-    @param {sublime.view}
-    @return {[sublime.Region]}
+    :return: list of ST regions
 
     """
 
@@ -101,12 +95,11 @@ def get_colored_regions(view):
 # generate new theme file
 
 def generate_theme(theme_path, colors):
-    """Generate new ST theme file
-    with highlighting rules definitions for new colors.
+    """Generates new ST theme file with rules for new colors.
 
-    @param {str}   theme_path
-    @param {[Color]} colors
-    @return {str}
+    :param theme_path: path to ST theme file
+    :param colors: list of colors wrapped by :attr:`livecss.color.Color` object
+    :return: newly created theme file
 
     """
 
@@ -121,8 +114,8 @@ def generate_theme(theme_path, colors):
 def template(color):
     """Template to insert in theme plist file.
 
-    @param {Color} color
-    @return {dict}
+    :param color: :attr:`livecss.color.Color` object
+    :return: plist convert ready dict
 
     """
 
@@ -139,10 +132,11 @@ def template(color):
 # add/remove regions from view
 
 def highlight_regions(view, regions, colors, state):
-    """Highlight @regions by @colors
+    """Highlights `regions` by `colors`
 
-    @param {[sublime.Region]}
-    @param {[Color]}
+    :param regions: regions with color definition
+    :param colors: colors to highlight these regions
+    :param state: current state for this file. :attr:`livecss.state.State` object
 
     """
 
@@ -159,11 +153,7 @@ def highlight_regions(view, regions, colors, state):
 
 
 def clear_css_regions(view):
-    """Remove previously highlighted regions.
-
-    @param {sublime.view} view
-
-    """
+    """Removes previously highlighted regions"""
 
     count = 0
     while count != -1:

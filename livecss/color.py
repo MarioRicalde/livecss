@@ -1,4 +1,13 @@
-from named_colors import named_colors
+# -*- coding: utf-8 -*-
+
+"""
+    livecss.color
+    ~~~~~~~~~
+
+    This module implements some useful utilities.
+
+"""
+from .named_colors import named_colors
 
 
 class Color(object):
