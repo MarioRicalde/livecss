@@ -58,7 +58,7 @@ def seek_until(fileobj, until):
 
 
 def generate_theme_file(theme_file_path, dict_seq, new_theme_file_path):
-    """Appends `dict_seq`, converting it to plist format to `new_theme_file_path`
+    """Appends `dict_seq` to `new_theme_file_path`, converting it to plist format.
 
     :param theme_file_path: path to the theme file to read from
     :param dict_seq: list of dictionaries with color definitions
