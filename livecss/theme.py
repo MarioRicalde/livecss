@@ -23,7 +23,7 @@ SUBLIME_PATH = os.path.dirname(PACKAGES_PATH)
 class theme(object):
     """Global object represents ST color scheme """
 
-    _settings_file = 'Preferences.sublime-settings'
+    _settings_file = 'Base File.sublime-settings'
     _settings = sublime.load_settings(_settings_file)
     prefix = 'Colorized-'
 
