@@ -31,6 +31,7 @@ class theme(object):
         @property
         def abspath(cls):
             theme_path = cls._settings.get('color_scheme') or ""
+            print "Theme path: ", theme_path
 
             if theme_path.startswith('Packages'):
                 theme_path = os.path.join(SUBLIME_PATH, theme_path)

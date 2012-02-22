@@ -38,6 +38,7 @@ def colorize_file(view, erase_state=False):
 
     if state.need_generate_theme_file:
 
+        print "Uncolorized theme path ", uncolorized_path(theme.abspath)
         colorized_theme_path = generate_theme(uncolorized_path(theme.abspath), colors)
         theme.set(colorized_theme_path)
 
