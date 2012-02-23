@@ -29,7 +29,10 @@ class Color(object):
             if len(color) == 4:
                 # 3 sign hex
                 color = "#{0[1]}{0[1]}{0[2]}{0[2]}{0[3]}{0[3]}".format(color)
-            hex_color = color
+                hex_color = color
+            else:
+                # 6 sign hex
+                hex_color = "#{0[1]}{0[2]}{0[3]}{0[4]}{0[5]}{0[6]}".format(color)
 
         return hex_color
 
