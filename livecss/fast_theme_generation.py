@@ -6,6 +6,7 @@
 
 
 """
+import codecs
 
 
 def dict_to_plist(dictionary):
@@ -66,7 +67,7 @@ def generate_theme_file(theme_file_path, dict_seq, new_theme_file_path):
 
     """
 
-    with open(theme_file_path) as f:
+    with codecs.open(theme_file_path, 'r', 'utf-8') as f:
         # parse dict objects to plist format
         tempate_to_write = (dict_to_plist(d) for d in dict_seq)
         # find end of colors difinition
@@ -79,5 +80,5 @@ def generate_theme_file(theme_file_path, dict_seq, new_theme_file_path):
         end_text = '\n'.join(tempate_to_write) + f.read()
         new_theme_text = begin_text + end_text
 
-    with open(new_theme_file_path, 'w') as f:
+    with codecs.open(new_theme_file_path, 'w', 'utf-8') as f:
         f.write(new_theme_text)
