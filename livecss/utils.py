@@ -7,7 +7,6 @@
     This module implements some useful utilities.
 
 """
-
 import sublime
 
 # local imports

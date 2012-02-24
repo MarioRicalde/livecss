@@ -8,6 +8,8 @@
 
 """
 
+from .logger import *
+
 from .color import Color
 from .fast_theme_generation import generate_theme_file
 from .file_operatios import rm_theme
@@ -21,7 +23,7 @@ def colorize_file(view, erase_state=False):
     Erase_state setted to True forces recolorization
 
     """
-
+    info('start colorizing file')
     colored_regions = get_colored_regions(view)
     colors = get_colors(view, colored_regions)
     if not colors:
@@ -29,22 +31,28 @@ def colorize_file(view, erase_state=False):
 
     state = State(view, colors, colored_regions)
     if erase_state:
+        info('erasing state')
         state.erase()
 
     if not state.is_dirty:
+        info('state is not dirty')
         return
 
+    info('highlighting regions')
     highlight_regions(view, colored_regions, colors, state)
 
     if state.need_generate_theme_file:
+        info('Generating new theme file')
 
-        print "Uncolorized theme path ", uncolorized_path(theme.abspath)
+        debug("Uncolorized theme path %s" % uncolorized_path(theme.abspath))
         colorized_theme_path = generate_theme(uncolorized_path(theme.abspath), colors)
         theme.set(colorized_theme_path)
 
         # remove previously used theme if any
+        info('removing old theme file')
         rm_theme(state.theme_path)
         # associate theme with file
+        info('associate theme file state')
         state.theme_path = theme.abspath
 
 
@@ -103,7 +111,7 @@ def generate_theme(theme_path, colors):
     :return: newly created theme file
 
     """
-
+    debug('in generate_theme')
     colorized_theme_path = colorized_path(theme.abspath)
 
     new_colors = (template(color) for color in set(colors))

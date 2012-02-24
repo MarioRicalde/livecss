@@ -13,6 +13,7 @@ from os.path import basename, normpath, relpath, exists
 from random import randint
 import os.path
 import re
+from .logger import *
 
 import sublime
 
@@ -23,6 +24,8 @@ SUBLIME_PATH = os.path.dirname(PACKAGES_PATH)
 class theme(object):
     """Global object represents ST color scheme """
 
+    debug('init theme class')
+
     _settings_file = 'Base File.sublime-settings'
     _settings = sublime.load_settings(_settings_file)
     prefix = 'Colorized-'
@@ -31,10 +34,13 @@ class theme(object):
         @property
         def abspath(cls):
             theme_path = cls._settings.get('color_scheme') or ""
-            print "Theme path: ", theme_path
+
+            debug("cls._settings.get('color_scheme'): %s" % theme_path)
 
             if theme_path.startswith('Packages'):
+                debug("theme_path.startswith('Packages')")
                 theme_path = os.path.join(SUBLIME_PATH, theme_path)
+                debug("theme_path: %s" % theme_path)
 
             return normpath(theme_path)
 
