@@ -8,8 +8,6 @@
 
 """
 
-from .logger import *
-
 from .color import Color
 from .fast_theme_generation import generate_theme_file
 from .file_operatios import rm_theme
@@ -44,7 +42,6 @@ def colorize_file(view, erase_state=False):
     if state.need_generate_theme_file:
         info('Generating new theme file')
 
-        debug("Uncolorized theme path %s" % uncolorized_path(theme.abspath))
         colorized_theme_path = generate_theme(uncolorized_path(theme.abspath), colors)
         theme.set(colorized_theme_path)
 
@@ -111,7 +108,7 @@ def generate_theme(theme_path, colors):
     :return: newly created theme file
 
     """
-    debug('in generate_theme')
+
     colorized_theme_path = colorized_path(theme.abspath)
 
     new_colors = (template(color) for color in set(colors))
