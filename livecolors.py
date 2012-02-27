@@ -8,8 +8,6 @@
 
 """
 
-from livecss.logger import *
-
 import sublime_plugin
 
 # local imports
@@ -35,7 +33,6 @@ class CssUncolorizeCommand(sublime_plugin.TextCommand):
 class EventManager(sublime_plugin.EventListener):
     def __init__(self):
         # before anything
-        info('Started')
         clean_junk()
 
     def on_load(self, view):

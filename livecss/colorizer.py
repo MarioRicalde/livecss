@@ -21,7 +21,7 @@ def colorize_file(view, erase_state=False):
     Erase_state setted to True forces recolorization
 
     """
-    info('start colorizing file')
+
     colored_regions = get_colored_regions(view)
     colors = get_colors(view, colored_regions)
     if not colors:
@@ -29,27 +29,21 @@ def colorize_file(view, erase_state=False):
 
     state = State(view, colors, colored_regions)
     if erase_state:
-        info('erasing state')
         state.erase()
 
     if not state.is_dirty:
-        info('state is not dirty')
         return
 
-    info('highlighting regions')
     highlight_regions(view, colored_regions, colors, state)
 
     if state.need_generate_theme_file:
-        info('Generating new theme file')
 
         colorized_theme_path = generate_theme(uncolorized_path(theme.abspath), colors)
         theme.set(colorized_theme_path)
 
         # remove previously used theme if any
-        info('removing old theme file')
         rm_theme(state.theme_path)
         # associate theme with file
-        info('associate theme file state')
         state.theme_path = theme.abspath
 
 
