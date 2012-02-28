@@ -38,10 +38,6 @@ class theme(object):
             return normpath(theme_path)
 
         @property
-        def relpath(cls):
-            return relpath(cls.abspath, SUBLIME_PATH)
-
-        @property
         def dirname(cls):
             return os.path.dirname(cls.abspath)
 
@@ -50,7 +46,9 @@ class theme(object):
             return basename(cls.abspath)
 
         def set(cls, theme_path):
-            """theme: abs or relpath to PACKAGES_PATH"""
+            """Set current theme.
+            :param theme: abs or relpath to SUBLIME_PATH
+            """
             if exists(theme_path):
                 cls._settings.set('color_scheme', theme_path)
 
