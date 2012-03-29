@@ -13,7 +13,7 @@ from .wrappers import PerFileConfig
 
 class Config(PerFileConfig):
     """Object which wraps ST settings entity.
-    Properties started with `global_` are understood like global setting.
+    Properties started with `global_` are global setting.
     Properties started with `local_` are unique for file.
     Default value is True.
 

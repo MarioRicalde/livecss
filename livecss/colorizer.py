@@ -16,20 +16,22 @@ from .state import State
 from .theme import theme, uncolorized_path, colorized_path
 
 
-def colorize_file(view, erase_state=False):
+def colorize_file(view, state, erase_state=False):
     """Highlights color definition regions by it's real colors.
     Erase_state setted to True forces recolorization
 
     """
+    
+    if erase_state:
+        state.erase()
 
     colored_regions = get_colored_regions(view)
     colors = get_colors(view, colored_regions)
     if not colors:
         return
 
-    state = State(view, colors, colored_regions)
-    if erase_state:
-        state.erase()
+    state.colors = colors
+    state.regions = colored_regions
 
     if not state.is_dirty:
         return
@@ -37,7 +39,6 @@ def colorize_file(view, erase_state=False):
     highlight_regions(view, colored_regions, colors, state)
 
     if state.need_generate_theme_file:
-
         colorized_theme_path = generate_theme(uncolorized_path(theme.abspath), colors)
         theme.set(colorized_theme_path)
 
@@ -47,7 +48,7 @@ def colorize_file(view, erase_state=False):
         state.theme_path = theme.abspath
 
 
-def uncolorize_file(view):
+def uncolorize_file(view, state):
     """Removes highlighting from view,
     then delete modified theme file, set original theme
     and erase state for the view.
@@ -56,7 +57,6 @@ def uncolorize_file(view):
 
     clear_css_regions(view)
     theme.set(uncolorized_path(theme.abspath))
-    state = State(view)
 
     rm_theme(state.theme_path)
 
